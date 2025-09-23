@@ -70,7 +70,8 @@ def get_model(digit: int, *, max_value: int = 9999, max_cost: int = 2, input_jso
             try:
                 mymodel2 = onedigit.Model.fromdict(input=input_dict)
             except ValueError as e:
-                logger.error("failed to import model:", e)
+                logger.error(f"failed to import model: {e}")
+                return None
         if mymodel2.digit == digit:
             mymodel = mymodel2
         else:

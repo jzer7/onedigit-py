@@ -15,35 +15,35 @@ from onedigit.cli2 import _create_parser, _main, cmdline2
 class TestCli2(unittest.TestCase):
     """Test cases for the new argparse-based CLI."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         # Create temporary directory for test files
         self.temp_dir = tempfile.mkdtemp()
         self.addCleanup(lambda: self._cleanup_temp_dir())
 
-    def _cleanup_temp_dir(self):
+    def _cleanup_temp_dir(self) -> None:
         """Clean up temporary directory."""
         import shutil
         if os.path.exists(self.temp_dir):
             shutil.rmtree(self.temp_dir)
 
-    def test_parser_creation(self):
+    def test_parser_creation(self) -> None:
         """Test that the argument parser is created correctly."""
         parser = _create_parser()
         self.assertIsNotNone(parser)
         self.assertEqual(parser.prog, 'onedigit')
 
-    def test_main_basic_functionality(self):
+    def test_main_basic_functionality(self) -> None:
         """Test basic functionality with valid inputs."""
         result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
         self.assertTrue(result)
 
-    def test_main_with_nonexistent_input_file(self):
+    def test_main_with_nonexistent_input_file(self) -> None:
         """Test error handling for non-existent input file."""
         result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="nonexistent_file.json", output_filename="")
         self.assertFalse(result)
 
-    def test_main_with_valid_json_input(self):
+    def test_main_with_valid_json_input(self) -> None:
         """Test loading a valid JSON input file."""
         # Create a test JSON file with proper structure
         test_data = {
@@ -60,7 +60,7 @@ class TestCli2(unittest.TestCase):
         result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename=json_file, output_filename="")
         self.assertTrue(result)
 
-    def test_main_with_output_file(self):
+    def test_main_with_output_file(self) -> None:
         """Test creating an output file."""
         output_file = os.path.join(self.temp_dir, "test_output.json")
 
@@ -73,7 +73,7 @@ class TestCli2(unittest.TestCase):
             data = json.load(f)
             self.assertIsInstance(data, dict)
 
-    def test_main_with_permission_error_input(self):
+    def test_main_with_permission_error_input(self) -> None:
         """Test error handling for permission error on input file."""
         # Create a file and remove read permissions
         test_file = os.path.join(self.temp_dir, "no_read.json")
@@ -89,7 +89,7 @@ class TestCli2(unittest.TestCase):
         os.chmod(test_file, 0o644)
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_main_output_format_simple(self, mock_stdout):
+    def test_main_output_format_simple(self, mock_stdout: StringIO) -> None:
         """Test output format with simple expressions."""
         result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
         self.assertTrue(result)
@@ -99,7 +99,7 @@ class TestCli2(unittest.TestCase):
         self.assertIn("[", output)  # Cost indicator
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_main_output_format_full(self, mock_stdout):
+    def test_main_output_format_full(self, mock_stdout: StringIO) -> None:
         """Test output format with full expressions."""
         result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=True, input_filename="", output_filename="")
         self.assertTrue(result)
@@ -108,38 +108,38 @@ class TestCli2(unittest.TestCase):
         self.assertIn("=", output)
         self.assertIn("[", output)  # Cost indicator
 
-    def test_cmdline2_with_valid_args(self):
+    def test_cmdline2_with_valid_args(self) -> None:
         """Test cmdline2 with valid command line arguments."""
         args = ['3', '--max-value', '10', '--max-cost', '2']
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_cmdline2_with_help(self):
+    def test_cmdline2_with_help(self) -> None:
         """Test cmdline2 with help argument."""
         args = ['--help']
         result = cmdline2(args)
         # Help should return True (exit code 0)
         self.assertTrue(result)
 
-    def test_cmdline2_with_invalid_args(self):
+    def test_cmdline2_with_invalid_args(self) -> None:
         """Test cmdline2 with invalid arguments."""
         args = ['invalid_digit']
         result = cmdline2(args)
         self.assertFalse(result)
 
-    def test_cmdline2_missing_required_args(self):
+    def test_cmdline2_missing_required_args(self) -> None:
         """Test cmdline2 with missing required arguments."""
-        args = []
+        args: list[str] = []
         result = cmdline2(args)
         self.assertFalse(result)
 
-    def test_cmdline2_with_full_flag(self):
+    def test_cmdline2_with_full_flag(self) -> None:
         """Test cmdline2 with full flag."""
         args = ['3', '--full', '--max-value', '10']
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_cmdline2_with_input_file(self):
+    def test_cmdline2_with_input_file(self) -> None:
         """Test cmdline2 with input file."""
         # Create a test JSON file with proper structure
         test_data = {"digit": 3, "max_value": 100, "max_cost": 3, "combinations": []}
@@ -151,7 +151,7 @@ class TestCli2(unittest.TestCase):
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_cmdline2_with_output_file(self):
+    def test_cmdline2_with_output_file(self) -> None:
         """Test cmdline2 with output file."""
         output_file = os.path.join(self.temp_dir, "test_output.json")
 
@@ -160,7 +160,7 @@ class TestCli2(unittest.TestCase):
         self.assertTrue(result)
         self.assertTrue(os.path.exists(output_file))
 
-    def test_cmdline2_argument_parsing_edge_cases(self):
+    def test_cmdline2_argument_parsing_edge_cases(self) -> None:
         """Test edge cases in argument parsing."""
         # Test with all arguments
         output_file = os.path.join(self.temp_dir, "test_output.json")
@@ -175,12 +175,12 @@ class TestCli2(unittest.TestCase):
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_main_large_parameters(self):
+    def test_main_large_parameters(self) -> None:
         """Test with large parameter values."""
         result = _main(digit=3, max_value=100000, max_cost=10, max_steps=1, full=False, input_filename="", output_filename="")
         self.assertTrue(result)
 
-    def test_main_automatic_output_filename(self):
+    def test_main_automatic_output_filename(self) -> None:
         """Test that automatic output filename generation works."""
         # When output_filename is empty, it should generate a filename
         result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
@@ -214,7 +214,7 @@ class TestCli2(unittest.TestCase):
             except OSError:
                 pass
 
-    def test_compatibility_with_original_cli(self):
+    def test_compatibility_with_original_cli(self) -> None:
         """Test that new CLI produces same results as original CLI core logic."""
         # Import the original main function
         from onedigit.cli import main as original_main

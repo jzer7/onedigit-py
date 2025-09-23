@@ -21,6 +21,11 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 x-soft-wrap-text = true
 
+[{Makefile*,*.mk}]
+indent_size = 8
+indent_style = tab
+insert_final_newline = true
+
 [*.py]
 indent_size = 4
 indent_style = space
