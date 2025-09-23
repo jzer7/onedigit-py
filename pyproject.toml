@@ -1,3 +1,7 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
 [project]
 name = "onedigit"
 dynamic = ["version"]
@@ -24,10 +28,6 @@ classifiers = [
 ]
 
 
-[build-system]
-requires      = ["pdm-backend"]
-build-backend = "pdm.backend"
-
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
 
@@ -46,36 +46,6 @@ show_error_codes            = true
 warn_redundant_casts        = true
 warn_return_any             = true
 warn_unused_ignores         = true
-
-[tool.pdm]
-
-[tool.pdm.scripts]
-_format_py = { cmd = "ruff format onedigit src tests" }
-format = { composite = [
-    "_format_py",
-], help = "format source files" }
-test = { composite = [
-    "pytest --cov",
-    "coverage",
-], help = "tests and coverage report" }
-_check_mypy = { cmd = "mypy onedigit src tests", help = "static type checking" }
-_check_ruff = { cmd = "ruff check onedigit src tests", help = "static check" }
-_check_bandit = { cmd = "bandit -c pyproject.toml -q -r onedigit src tests", help = "static security check" }
-check = { composite = [
-    "_check_ruff",
-    "_check_mypy",
-    "_check_bandit",
-], help = "static checks on the codebase" }
-todo = { cmd = "grep -E '# *(HACK|TODO|FIXME|BUG)' -R onedigit src tests", help = "pending work" }
-all = { composite = [
-    "format",
-    "test",
-    "check",
-], help = "protect against small things before a commit" }
-
-[tool.pdm.version]
-source = "file"
-path   = "src/onedigit/info.py"
 
 [tool.ruff]
 line-length = 120

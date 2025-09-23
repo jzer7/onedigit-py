@@ -1,18 +1,10 @@
-# Documentation available at
-# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-#
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
 version: 2
 updates:
-  # Version updates for Python modules
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "weekly"
 
-  # Version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

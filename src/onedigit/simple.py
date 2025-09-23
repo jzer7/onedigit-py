@@ -4,7 +4,9 @@ import json
 
 import onedigit
 
-logger = onedigit.get_logger(__name__)
+from .logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def calculate(

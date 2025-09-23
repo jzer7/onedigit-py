@@ -7,9 +7,9 @@ import dataclasses
 import math
 from typing import Any, List
 
-import onedigit
+from .logger import get_logger
 
-logger = onedigit.get_logger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclasses.dataclass
