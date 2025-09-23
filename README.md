@@ -118,4 +118,58 @@ onedigit --digit 7 --max_value 100 --output_filename foo.json
 cat foo.json | jq '.[] | select(.cost <= 3) | {"value":.value, "expression":.expr_full}'
 ```
 
+## Alternative CLI (cli2.py)
+
+This project also includes an alternative CLI implementation (`cli2.py`) that uses Python's `argparse` instead of the `fire` library. This provides a more traditional command-line interface experience.
+
+### Usage
+
+The script `onedigit2` provides the same functionality as `onedigit` but with standard argparse-style arguments:
+
+```txt
+usage: onedigit [-h] [--max-value MAX_VALUE] [--max-cost MAX_COST] 
+                [--max-steps MAX_STEPS] [--full] [--input-filename INPUT_FILENAME] 
+                [--output-filename OUTPUT_FILENAME] digit
+
+Calculate number combinations with a single digit.
+
+positional arguments:
+  digit                 The digit to use to generate combinations (1-9)
+
+options:
+  -h, --help            show this help message and exit
+  --max-value MAX_VALUE
+                        Largest value for a combination to be shown in the output (default: 9999)
+  --max-cost MAX_COST   Maximum cost a combination can have for it to be remembered (default: 2)
+  --max-steps MAX_STEPS
+                        Maximum number of generative rounds (default: 5)
+  --full                Display combinations using full expressions instead of simple values
+  --input-filename INPUT_FILENAME
+                        JSON file used to preload the model
+  --output-filename OUTPUT_FILENAME
+                        JSON file used to store the model upon completion
+```
+
+### Examples
+
+The simplest use is to get combinations using the digit `3`:
+
+```sh
+./onedigit2 3
+```
+
+Show combinations for digit 7 up to 100 with full expressions:
+
+```sh
+./onedigit2 7 --max-value 100 --full
+```
+
+Load model from file and save results:
+
+```sh
+./onedigit2 3 --input-filename input.json --output-filename results.json
+```
+
+Both CLI implementations (`onedigit` and `onedigit2`) produce identical results and support the same functionality.
+
 木
