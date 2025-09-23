@@ -5,9 +5,9 @@
 import re
 import sys
 
-from onedigit.cli2 import main_cli2
+from onedigit.cli2 import cmdline2
 
 if __name__ == "__main__":
     sys.argv[0] = re.sub(r"(-script\.pyw|\.exe)?$", "", sys.argv[0])
-    success = main_cli2()
+    success = cmdline2()
     sys.exit(0 if success else 1)
