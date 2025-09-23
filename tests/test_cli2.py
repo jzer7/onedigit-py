@@ -5,7 +5,7 @@ import unittest
 from io import StringIO
 from unittest.mock import patch
 
-from onedigit.cli2 import cmdline2, create_parser, main
+from onedigit.cli2 import _create_parser, _main, cmdline2
 
 # This test file focuses on testing the parsing and validation of command line arguments
 # for the cli2 module. It is not an end-to-end test. The actual results of calculations
@@ -29,48 +29,18 @@ class TestCli2(unittest.TestCase):
 
     def test_parser_creation(self):
         """Test that the argument parser is created correctly."""
-        parser = create_parser()
+        parser = _create_parser()
         self.assertIsNotNone(parser)
         self.assertEqual(parser.prog, 'onedigit')
 
     def test_main_basic_functionality(self):
         """Test basic functionality with valid inputs."""
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
         self.assertTrue(result)
-
-    def test_main_with_invalid_digit_range(self):
-        """Test error handling for digit out of range."""
-        # Test digit too low
-        result = main(digit=0, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
-        self.assertFalse(result)
-
-        # Test digit too high
-        result = main(digit=10, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
-        self.assertFalse(result)
-
-    def test_main_with_invalid_digit_type(self):
-        """Test error handling for non-integer digit."""
-        result = main(digit="not_a_number", max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
-        self.assertFalse(result)
-
-    def test_main_with_invalid_parameters(self):
-        """Test error handling for invalid parameter types."""
-        result = main(digit=3, max_value="invalid", max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
-        self.assertFalse(result)
 
     def test_main_with_nonexistent_input_file(self):
         """Test error handling for non-existent input file."""
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="nonexistent_file.json", output_filename="")
-        self.assertFalse(result)
-
-    def test_main_with_invalid_input_filename_type(self):
-        """Test error handling for invalid input filename type."""
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename=123, output_filename="")
-        self.assertFalse(result)
-
-    def test_main_with_invalid_output_filename_type(self):
-        """Test error handling for invalid output filename type."""
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename=123)
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="nonexistent_file.json", output_filename="")
         self.assertFalse(result)
 
     def test_main_with_valid_json_input(self):
@@ -87,14 +57,14 @@ class TestCli2(unittest.TestCase):
         with open(json_file, 'w') as f:
             json.dump(test_data, f)
 
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename=json_file, output_filename="")
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename=json_file, output_filename="")
         self.assertTrue(result)
 
     def test_main_with_output_file(self):
         """Test creating an output file."""
         output_file = os.path.join(self.temp_dir, "test_output.json")
 
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename=output_file)
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename=output_file)
         self.assertTrue(result)
         self.assertTrue(os.path.exists(output_file))
 
@@ -112,7 +82,7 @@ class TestCli2(unittest.TestCase):
 
         os.chmod(test_file, 0o000)  # Remove all permissions
 
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename=test_file, output_filename="")
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename=test_file, output_filename="")
         self.assertFalse(result)
 
         # Restore permissions for cleanup
@@ -121,7 +91,7 @@ class TestCli2(unittest.TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_main_output_format_simple(self, mock_stdout):
         """Test output format with simple expressions."""
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
         self.assertTrue(result)
 
         output = mock_stdout.getvalue()
@@ -131,45 +101,45 @@ class TestCli2(unittest.TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_main_output_format_full(self, mock_stdout):
         """Test output format with full expressions."""
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=True, input_filename="", output_filename="")
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=True, input_filename="", output_filename="")
         self.assertTrue(result)
 
         output = mock_stdout.getvalue()
         self.assertIn("=", output)
         self.assertIn("[", output)  # Cost indicator
 
-    def test_cli2_with_valid_args(self):
+    def test_cmdline2_with_valid_args(self):
         """Test cmdline2 with valid command line arguments."""
         args = ['3', '--max-value', '10', '--max-cost', '2']
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_cli2_with_help(self):
+    def test_cmdline2_with_help(self):
         """Test cmdline2 with help argument."""
         args = ['--help']
         result = cmdline2(args)
         # Help should return True (exit code 0)
         self.assertTrue(result)
 
-    def test_cli2_with_invalid_args(self):
+    def test_cmdline2_with_invalid_args(self):
         """Test cmdline2 with invalid arguments."""
         args = ['invalid_digit']
         result = cmdline2(args)
         self.assertFalse(result)
 
-    def test_cli2_missing_required_args(self):
+    def test_cmdline2_missing_required_args(self):
         """Test cmdline2 with missing required arguments."""
         args = []
         result = cmdline2(args)
         self.assertFalse(result)
 
-    def test_cli2_with_full_flag(self):
+    def test_cmdline2_with_full_flag(self):
         """Test cmdline2 with full flag."""
         args = ['3', '--full', '--max-value', '10']
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_cli2_with_input_file(self):
+    def test_cmdline2_with_input_file(self):
         """Test cmdline2 with input file."""
         # Create a test JSON file with proper structure
         test_data = {"digit": 3, "max_value": 100, "max_cost": 3, "combinations": []}
@@ -181,7 +151,7 @@ class TestCli2(unittest.TestCase):
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_cli2_with_output_file(self):
+    def test_cmdline2_with_output_file(self):
         """Test cmdline2 with output file."""
         output_file = os.path.join(self.temp_dir, "test_output.json")
 
@@ -190,7 +160,7 @@ class TestCli2(unittest.TestCase):
         self.assertTrue(result)
         self.assertTrue(os.path.exists(output_file))
 
-    def test_cli2_argument_parsing_edge_cases(self):
+    def test_cmdline2_argument_parsing_edge_cases(self):
         """Test edge cases in argument parsing."""
         # Test with all arguments
         output_file = os.path.join(self.temp_dir, "test_output.json")
@@ -205,21 +175,15 @@ class TestCli2(unittest.TestCase):
         result = cmdline2(args)
         self.assertTrue(result)
 
-    def test_main_zero_max_value(self):
-        """Test behavior with zero max_value."""
-        # Zero max_value should fail as the model requires max_value >= 1
-        result = main(digit=3, max_value=0, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
-        self.assertFalse(result)
-
     def test_main_large_parameters(self):
         """Test with large parameter values."""
-        result = main(digit=3, max_value=100000, max_cost=10, max_steps=1, full=False, input_filename="", output_filename="")
+        result = _main(digit=3, max_value=100000, max_cost=10, max_steps=1, full=False, input_filename="", output_filename="")
         self.assertTrue(result)
 
     def test_main_automatic_output_filename(self):
         """Test that automatic output filename generation works."""
         # When output_filename is empty, it should generate a filename
-        result = main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
+        result = _main(digit=3, max_value=10, max_cost=2, max_steps=2, full=False, input_filename="", output_filename="")
         self.assertTrue(result)
 
         # Check that an automatically generated output file was created
@@ -270,7 +234,7 @@ class TestCli2(unittest.TestCase):
             output_filename="/tmp/test_original.json"
         )
 
-        new_result = main(
+        new_result = _main(
             digit=digit,
             max_value=max_value,
             max_cost=max_cost,

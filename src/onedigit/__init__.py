@@ -14,7 +14,7 @@ __all__ = [
     "Model",
     "advance",
     "calculate",
+    "cmdline2",
     "get_model",
-    "main",
-    "cmdline2"
+    "main"
 ]

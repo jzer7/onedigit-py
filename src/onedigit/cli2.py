@@ -14,7 +14,7 @@ from .logger import get_logger
 logger = get_logger(__name__)
 
 
-def create_parser() -> argparse.ArgumentParser:
+def _create_parser() -> argparse.ArgumentParser:
     """
     Create the argument parser for the CLI.
 
@@ -45,36 +45,42 @@ Examples:
     parser.add_argument(
         '--max-value',
         type=int,
+        default=9999,
         help='Largest value for a combination to be shown in the output (default: 9999)'
     )
 
     parser.add_argument(
         '--max-cost',
         type=int,
+        default=2,
         help='Maximum cost a combination can have for it to be remembered (default: 2)'
     )
 
     parser.add_argument(
         '--max-steps',
         type=int,
+        default=5,
         help='Maximum number of generative rounds (default: 5)'
     )
 
     parser.add_argument(
         '--full',
         action='store_true',
+        default=False,
         help='Display combinations using full expressions instead of simple values'
     )
 
     parser.add_argument(
         '--input-filename',
         type=str,
+        default='',
         help='JSON file used to preload the model'
     )
 
     parser.add_argument(
         '--output-filename',
         type=str,
+        default='',
         help='JSON file used to store the model upon completion. If not provided, a random filename will be used'
     )
 
@@ -85,19 +91,24 @@ def cmdline2(args: Optional[list[str]] = None) -> bool:
     """
     Main entry point for the argparse-based CLI.
 
+    This function parses command line arguments, validates them,
+    and calls the internal main function to perform the calculation.
+
     Args:
         args: Command line arguments (if None, uses sys.argv)
 
     Returns:
         bool: True if calculation runs without issues, False otherwise
     """
-    parser = create_parser()
+    parser = _create_parser()
 
     try:
         parsed_args = parser.parse_args(args)
     except SystemExit as e:
         # argparse calls sys.exit() on error, we catch it to return False
         return e.code == 0
+
+    digit = parsed_args.digit
 
     # Set default values for arguments not provided
     max_value = parsed_args.max_value if parsed_args.max_value is not None else 9999
@@ -106,8 +117,43 @@ def cmdline2(args: Optional[list[str]] = None) -> bool:
     input_filename = parsed_args.input_filename or ""
     output_filename = parsed_args.output_filename or ""
 
-    # Call the main function with parsed arguments
-    return main(
+    # ------------------------------------------------------------
+    # Input validation and sanitization
+    try:
+        digit = int(digit)
+        max_value = int(max_value)
+        max_cost = int(max_cost)
+        max_steps = int(max_steps)
+    except (ValueError, TypeError):
+        logger.error('digit, max_value, max_cost, and max_steps must be positive integer numbers')
+        return False
+
+    if not (1 <= digit <= 9):
+        logger.error('digit must be an integer number between 1 and 9')
+        return False
+
+    if not (1 <= max_value <= 1_000_000):
+        logger.error('max_value must be a positive number between 1 and 1,000,000')
+        return False
+
+    if not (1 <= max_cost <= 30):
+        logger.error('max_cost must be a positive number between 1 and 30')
+        return False
+
+    if not (1 <= max_steps <= 100):
+        logger.error('max_steps must be a positive number between 1 and 100')
+        return False
+
+    if not isinstance(input_filename, str):
+        logger.error('input_filename is not valid')
+        return False
+
+    if not isinstance(output_filename, str):
+        logger.error('output_filename is not valid')
+        return False
+
+    # Call the (internal) main function with parsed arguments
+    return _main(
         digit=parsed_args.digit,
         max_value=max_value,
         max_cost=max_cost,
@@ -118,9 +164,8 @@ def cmdline2(args: Optional[list[str]] = None) -> bool:
     )
 
 
-def main(
+def _main(
     digit: int,
-    *,
     max_value: int,
     max_cost: int,
     max_steps: int,
@@ -129,9 +174,9 @@ def main(
     output_filename: str,
 ) -> bool:
     """
-    Command line interface to calculate combinations using a given digit.
+    Internal main function to perform the calculation.
 
-    This is the same core logic as the original CLI but separated for reuse.
+    It receives already validated and sanitized arguments.
 
     Args:
         digit (int): the digit to use to generate combinations.
@@ -160,42 +205,7 @@ def main(
         t = datetime.datetime.now(tz)
         output_filename = "model" + "." + t.strftime("%Y%m%d%H%M%S") + ".json"
 
-    # ------------------------------------------------------------
-    # Input validation and sanitization
-    try:
-        digit = int(digit)
-        max_value = int(max_value)
-        max_cost = int(max_cost)
-        max_steps = int(max_steps)
-    except (ValueError, TypeError):
-        logger.error("digit, max_value, max_cost, and max_steps must be positive integer numbers")
-        return False
-
-    if not (1 <= digit <= 9):
-        logger.error("digit must be an integer number between 1 and 9")
-        return False
-
-    if not (1 <= max_value <= 1_000_000):
-        logger.error("max_value must be a positive number between 1 and 1,000,000")
-        return False
-
-    if not (1 <= max_cost <= 30):
-        logger.error("max_cost must be a positive number between 1 and 30")
-        return False
-
-    if not (1 <= max_steps <= 100):
-        logger.error("max_steps must be a positive number between 1 and 100")
-        return False
-
-    if not isinstance(input_filename, str):
-        logger.error("input_filename is not valid")
-        return False
-
-    if not isinstance(output_filename, str):
-        logger.error("output_filename is not valid")
-        return False
-
-    # ------------------------------------------------------------
+        # ------------------------------------------------------------
         tz = datetime.UTC
         t = datetime.datetime.now(tz)
         output_filename = "model" + "." + t.strftime("%Y%m%d%H%M%S") + ".json"
