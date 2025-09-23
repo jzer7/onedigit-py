@@ -122,6 +122,8 @@ cat foo.json | jq '.[] | select(.cost <= 3) | {"value":.value, "expression":.exp
 
 This project also includes an alternative CLI implementation (`cli2.py`) that uses Python's `argparse` instead of the `fire` library. This provides a more traditional command-line interface experience.
 
+Note that the argument names in `cli2` use dashes instead of underscores (e.g., `--max-value` instead of `--max_value`).
+
 ### Usage
 
 The script `onedigit2` provides the same functionality as `onedigit` but with standard argparse-style arguments:
