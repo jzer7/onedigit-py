@@ -11,9 +11,9 @@ keywords = [
     "puzzle",
 ]
 dependencies = [
-    "fire>=0.7.0",
+    "fire",
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 readme = "README.md"
 license = { text = "MIT" }
 classifiers = [
@@ -90,12 +90,12 @@ extend-select = [
 
 [dependency-groups]
 lint = [
-    "mypy>=1.14.0",
-    "ruff>=0.8.4",
+    "mypy",
+    "ruff",
 ]
 test = [
-    "bandit[toml]>=1.8.3",
-    "hypothesis[cli]>=6.123.15",
-    "pytest>=8.3.4",
-    "pytest-cov>=6.0.0",
+    "bandit[toml]",
+    "hypothesis[cli]",
+    "pytest",
+    "pytest-cov",
 ]
