@@ -4,9 +4,8 @@
 import datetime
 import json
 
-import onedigit
-
 from .logger import get_logger
+from .simple import calculate
 
 logger = get_logger(__name__)
 
@@ -100,8 +99,12 @@ def main(
         del input_lines
 
     # Start calculation
-    model = onedigit.calculate(
-        digit=digit, max_value=max_value, max_cost=max_cost, max_steps=max_steps, input_json=input_text
+    model = calculate(
+        digit=digit,
+        max_value=max_value,
+        max_cost=max_cost,
+        max_steps=max_steps,
+        input_json=input_text,
     )
     del input_text
 

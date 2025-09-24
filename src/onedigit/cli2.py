@@ -7,9 +7,8 @@ import json
 import sys
 from typing import Optional
 
-import onedigit
-
 from .logger import get_logger
+from .simple import calculate
 
 logger = get_logger(__name__)
 
@@ -22,66 +21,62 @@ def _create_parser() -> argparse.ArgumentParser:
         argparse.ArgumentParser: Configured argument parser
     """
     parser = argparse.ArgumentParser(
-        prog='onedigit',
-        description='Calculate number combinations with a single digit.',
-        epilog='''
+        prog="onedigit",
+        description="Calculate number combinations with a single digit.",
+        epilog="""
 Examples:
   onedigit 3                      # Use digit 3 with defaults
   onedigit 7 --max-value 100      # Use digit 7, show values up to 100
   onedigit 5 --full               # Show full expressions instead of simple
   onedigit 3 --input input.json   # Load model from JSON file
-        ''',
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        """,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
     # Required positional argument
-    parser.add_argument(
-        'digit',
-        type=int,
-        help='The digit to use to generate combinations (1-9)'
-    )
+    parser.add_argument("digit", type=int, help="The digit to use to generate combinations (1-9)")
 
     # Optional arguments
     parser.add_argument(
-        '--max-value',
+        "--max-value",
         type=int,
         default=9999,
-        help='Largest value for a combination to be shown in the output (default: 9999)'
+        help="Largest value for a combination to be shown in the output (default: 9999)",
     )
 
     parser.add_argument(
-        '--max-cost',
+        "--max-cost",
         type=int,
         default=2,
-        help='Maximum cost a combination can have for it to be remembered (default: 2)'
+        help="Maximum cost a combination can have for it to be remembered (default: 2)",
     )
 
     parser.add_argument(
-        '--max-steps',
+        "--max-steps",
         type=int,
         default=5,
-        help='Maximum number of generative rounds (default: 5)'
+        help="Maximum number of generative rounds (default: 5)",
     )
 
     parser.add_argument(
-        '--full',
-        action='store_true',
+        "--full",
+        action="store_true",
         default=False,
-        help='Display combinations using full expressions instead of simple values'
+        help="Display combinations using full expressions instead of simple values",
     )
 
     parser.add_argument(
-        '--input-filename',
+        "--input-filename",
         type=str,
-        default='',
-        help='JSON file used to preload the model'
+        default="",
+        help="JSON file used to preload the model",
     )
 
     parser.add_argument(
-        '--output-filename',
+        "--output-filename",
         type=str,
-        default='',
-        help='JSON file used to store the model upon completion. If not provided, a random filename will be used'
+        default="",
+        help="JSON file used to store the model upon completion. If not provided, a random filename will be used",
     )
 
     return parser
@@ -125,31 +120,31 @@ def cmdline2(args: Optional[list[str]] = None) -> bool:
         max_cost = int(max_cost)
         max_steps = int(max_steps)
     except (ValueError, TypeError):
-        logger.error('digit, max_value, max_cost, and max_steps must be positive integer numbers')
+        logger.error("digit, max_value, max_cost, and max_steps must be positive integer numbers")
         return False
 
     if not (1 <= digit <= 9):
-        logger.error('digit must be an integer number between 1 and 9')
+        logger.error("digit must be an integer number between 1 and 9")
         return False
 
     if not (1 <= max_value <= 1_000_000):
-        logger.error('max_value must be a positive number between 1 and 1,000,000')
+        logger.error("max_value must be a positive number between 1 and 1,000,000")
         return False
 
     if not (1 <= max_cost <= 30):
-        logger.error('max_cost must be a positive number between 1 and 30')
+        logger.error("max_cost must be a positive number between 1 and 30")
         return False
 
     if not (1 <= max_steps <= 100):
-        logger.error('max_steps must be a positive number between 1 and 100')
+        logger.error("max_steps must be a positive number between 1 and 100")
         return False
 
     if not isinstance(input_filename, str):
-        logger.error('input_filename is not valid')
+        logger.error("input_filename is not valid")
         return False
 
     if not isinstance(output_filename, str):
-        logger.error('output_filename is not valid')
+        logger.error("output_filename is not valid")
         return False
 
     # Call the (internal) main function with parsed arguments
@@ -160,7 +155,7 @@ def cmdline2(args: Optional[list[str]] = None) -> bool:
         max_steps=max_steps,
         full=parsed_args.full,
         input_filename=input_filename,
-        output_filename=output_filename
+        output_filename=output_filename,
     )
 
 
@@ -235,8 +230,12 @@ def _main(
         del input_lines
 
     # Start calculation
-    model = onedigit.calculate(
-        digit=digit, max_value=max_value, max_cost=max_cost, max_steps=max_steps, input_json=input_text
+    model = calculate(
+        digit=digit,
+        max_value=max_value,
+        max_cost=max_cost,
+        max_steps=max_steps,
+        input_json=input_text,
     )
     del input_text
 

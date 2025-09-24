@@ -11,8 +11,10 @@
         "**/.pytype": true,
         "**/.ruff_cache": true,
         "**/.venv": true,
+        "**/*.egg-info": true,
         "**/*.swp": true,
         "**/pdm.lock": true,
+        "**/uv.lock": true,
     },
     "python.analysis.typeCheckingMode": "basic",
     "[python]": {

@@ -31,23 +31,20 @@ jobs:
       - name: Install Python dependencies
         run: uv sync --all-groups
 
-      - name: Static analysis on codebase
+      - name: Static analysis on main code
         run: |
-          uv run ruff check src
-          uv run mypy src
-          uv run bandit -c pyproject.toml -q -r src
+          CODEBASE=src make format-check
+          CODEBASE=src make static
 
       # Run static analysis on tests separately. 
-      # Some tools inject knowledge of the codebase into tests, which is acceptable for CI.
+      # Some tools inject knowledge of the main codebase into tests, which is acceptable for CI.
       # However, IDEs may not do this, so we validate types in tests independently.
       - name: Static analysis on tests
         run: |
-          uv run ruff check tests
-          uv run mypy tests
-          uv run bandit -c pyproject.toml -q -r tests
+          CODEBASE=tests make format-check
+          CODEBASE=tests make static
 
       - name: Run unit tests on codebase (pytest)
         run: |
-          uv run pytest --cov=src --cov-report=term-missing --cov-report=xml tests
-          uv run coverage xml
-          uv run coverage report -m --fail-under=80
+          make unittest-verbose
+          make unittest-coverage

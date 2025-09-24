@@ -42,7 +42,7 @@ class Combo:
 
     def __repr__(self) -> str:
         """
-        Provide a string representatoin of the Combo object.
+        Provide a string representation of the Combo object.
 
         Returns:
             str: string representation of the Combo object
@@ -131,7 +131,7 @@ class Combo:
             op (str): operation to run (!, sqrt).
 
         Note:
-            To avoid inmensely large operations, the factorial
+            To avoid immensely large operations, the factorial
             operation only works on numbers up to '20'.
 
                 20! is 62-bits (~2 x 10^18)
@@ -175,7 +175,12 @@ class Combo:
             case _:
                 raise ValueError("bad operator:", op)
 
-        return Combo(value=rc_val, cost=self.cost, expr_full=rc_expr_full, expr_simple=rc_expr_simple)
+        return Combo(
+            value=rc_val,
+            cost=self.cost,
+            expr_full=rc_expr_full,
+            expr_simple=rc_expr_simple,
+        )
 
     def binary_operation(self, combo2: Combo, op: str) -> Combo:
         """
@@ -194,7 +199,7 @@ class Combo:
                 multiplication(*), integer division(/), exponentiation(^)
 
         Note:
-            To avoid inmensely large operations, the exponent in the
+            To avoid immensely large operations, the exponent in the
             exponentiation operation is limited to '40'.
 
                 9^20 is 64-bits (~1.2 x 10^19)
@@ -270,7 +275,7 @@ class Model:
         Build a model for the game simulation.
 
         Args:
-            digit (int): digit to use when creating expresions
+            digit (int): digit to use when creating expressions
 
         Raises:
             ValueError: if digit value is out of range [1,9]
@@ -306,7 +311,12 @@ class Model:
         self.max_cost = max_cost
 
         # Set up the digit for the simulation
-        self.state[self.digit] = Combo(value=self.digit, cost=1, expr_full=str(self.digit), expr_simple=str(self.digit))
+        self.state[self.digit] = Combo(
+            value=self.digit,
+            cost=1,
+            expr_full=str(self.digit),
+            expr_simple=str(self.digit),
+        )
 
         # Allow expressions for joint digits (say, 22, two 2s)
         if 1 <= self.digit <= 9:
@@ -314,7 +324,11 @@ class Model:
             while (num <= self.max_value) and (cost <= self.max_cost):
                 self.state[num] = Combo(value=num, cost=cost, expr_full=expr, expr_simple=expr)
 
-                num, expr, cost = 10 * num + self.digit, expr + str(self.digit), cost + 1
+                num, expr, cost = (
+                    10 * num + self.digit,
+                    expr + str(self.digit),
+                    cost + 1,
+                )
 
     def copy(self) -> Model:
         """
@@ -371,7 +385,7 @@ class Model:
 
     def __repr__(self) -> str:
         """
-        Provide a string representatoin of the Model object.
+        Provide a string representation of the Model object.
 
         Returns:
             str: string representation of the Model object
@@ -500,5 +514,10 @@ class Model:
         for num in sorted(self.state.keys()):
             state.append(self.state[num].asdict())
 
-        obj = {"digit": self.digit, "max_cost": self.max_cost, "max_value": self.max_value, "combinations": state}
+        obj = {
+            "digit": self.digit,
+            "max_cost": self.max_cost,
+            "max_value": self.max_value,
+            "combinations": state,
+        }
         return obj

@@ -62,7 +62,7 @@ make tests
 
 For convenience, there are also targets that split that.
 
-Once you are ready to submit your PR, it might help to simulate the GitHub Actions work locally.
+Once you are ready to submit your PR, it helps to simulate the GitHub Actions work locally.
 You will need [act](https://nektosact.com/).
 
 ```sh

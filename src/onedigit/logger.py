@@ -33,7 +33,8 @@ def init_logger() -> None:
     # create formatters
     consoleformatter = logging.Formatter("%(levelname)s - %(message)s")
     fileformatter = logging.Formatter(
-        "%(asctime)s, %(name)s, %(levelname)s, %(message)s", datefmt="%Y-%m-%dT%H:%M:%S%z"
+        "%(asctime)s, %(name)s, %(levelname)s, %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%S%z",
     )
 
     # create console handler used for higher log levels

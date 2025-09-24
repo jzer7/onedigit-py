@@ -29,7 +29,11 @@ classifiers = [
 
 
 [tool.bandit]
-exclude_dirs = ["tests", ".venv"]
+exclude_dirs = [
+    "tests",
+    ".git",
+    ".venv"
+]
 
 [tool.coverage.html]
 directory = "coverage_html_report"
@@ -49,6 +53,9 @@ warn_unused_ignores         = true
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.format]
+docstring-code-format = true
 
 [tool.ruff.lint]
 extend-select = [

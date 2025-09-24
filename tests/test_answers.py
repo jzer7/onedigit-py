@@ -13,7 +13,6 @@ class TestAnswers(unittest.TestCase):
         max_cost=hst.integers(min_value=1, max_value=10),
         max_steps=hst.integers(min_value=2, max_value=3),
     )
-
     def test_answers(self, digit: int, max_value: int, max_cost: int, max_steps: int) -> None:
         model = onedigit.Model(digit=digit)
         assert model is not None

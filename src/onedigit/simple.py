@@ -2,16 +2,20 @@
 
 import json
 
-import onedigit
-
 from .logger import get_logger
+from .model import Model
 
 logger = get_logger(__name__)
 
 
 def calculate(
-    digit: int, *, max_value: int = 9999, max_cost: int = 10, max_steps: int = 10, input_json: str
-) -> onedigit.Model | None:
+    digit: int,
+    *,
+    max_value: int = 9999,
+    max_cost: int = 10,
+    max_steps: int = 10,
+    input_json: str,
+) -> Model | None:
     """
     Run a simple calculation.
 
@@ -23,7 +27,7 @@ def calculate(
         input_json (str, optional): JSON model data. Defaults to empty.
 
     Returns:
-        onedigit.Model: model object, or None if there is a failure.
+        Model: model object, or None if there is a failure.
     """
     logger.debug(f"calculate(digit={digit}, max_value={max_value}, max_cost={max_cost}, max_steps={max_steps})")
 
@@ -38,7 +42,7 @@ def calculate(
     return mymodel
 
 
-def get_model(digit: int, *, max_value: int = 9999, max_cost: int = 2, input_json: str = "") -> onedigit.Model | None:
+def get_model(digit: int, *, max_value: int = 9999, max_cost: int = 2, input_json: str = "") -> Model | None:
     """
     Obtain an initial model.
 
@@ -52,13 +56,13 @@ def get_model(digit: int, *, max_value: int = 9999, max_cost: int = 2, input_jso
         input_json (str, optional): JSON text that represents a model. Defaults to empty.
 
     Returns:
-        onedigit.Model: a model, or None.
+        Model: a model, or None.
     """
     logger.debug(
         f"get_model(digit={digit}, max_value={max_value}, max_cost={max_cost}, input_json={len(input_json)} chars)"
     )
     # Build a blank model
-    mymodel = onedigit.Model(digit=digit)
+    mymodel = Model(digit=digit)
 
     # Parse the input JSON
     if mymodel and input_json:
@@ -68,7 +72,7 @@ def get_model(digit: int, *, max_value: int = 9999, max_cost: int = 2, input_jso
         if input_dict:
             # Ingest the actual dictionary
             try:
-                mymodel2 = onedigit.Model.fromdict(input=input_dict)
+                mymodel2 = Model.fromdict(input=input_dict)
             except ValueError as e:
                 logger.error(f"failed to import model: {e}")
                 return None
@@ -87,7 +91,7 @@ def get_model(digit: int, *, max_value: int = 9999, max_cost: int = 2, input_jso
     return mymodel
 
 
-def advance(mymodel: onedigit.Model, max_steps: int = 10) -> onedigit.Model:
+def advance(mymodel: Model, max_steps: int = 10) -> Model:
     """
     Perform iterations over a onedigit model.
 
@@ -95,11 +99,11 @@ def advance(mymodel: onedigit.Model, max_steps: int = 10) -> onedigit.Model:
     if there is no change in state after an iteration.
 
     Args:
-        mymodel (onedigit.Model): model at the begining of the simulation.
+        mymodel (Model): model at the beginning of the simulation.
         max_steps (int): maximum number of steps (iterations) to run. Defaults to 10.
 
     Returns:
-        onedigit.Model: reference to the updated model.
+        Model: reference to the updated model.
     """
     logger.debug(f"simple.advance(mymodel={mymodel}, max_steps={max_steps})")
 
