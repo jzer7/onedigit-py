@@ -3,28 +3,28 @@ requires = ["flit_core >=3.11,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "onedigit"
-dynamic = ["version"]
-description = "Onedigit arithmetic puzzle"
-authors = [
+name            = "onedigit"
+dynamic         = ["version"]
+description     = "Onedigit arithmetic puzzle"
+authors         = [
     { name = "Juan Rubio", email = "jcrubio@gmail.com" },
 ]
-keywords = [
+license         = "MIT"
+readme          = "README.md"
+keywords        = [
     "arithmetic-game",
     "math",
     "puzzle",
 ]
-dependencies = [
-    "fire",
-]
-requires-python = ">=3.12"
-readme = "README.md"
-license = { text = "MIT" }
-classifiers = [
+classifiers     = [
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "Private :: Do Not Upload",
     "Topic :: Games/Entertainment :: Puzzle Games",
+]
+requires-python = ">=3.12"
+dependencies    = [
+    "fire>=0.7.1",
 ]
 
 
@@ -67,12 +67,12 @@ extend-select = [
 
 [dependency-groups]
 lint = [
-    "mypy",
-    "ruff",
+    "mypy>=1.18.2",
+    "ruff>=0.14.4",
 ]
 test = [
-    "bandit[toml]",
-    "hypothesis[cli]",
-    "pytest",
-    "pytest-cov",
+    "bandit[toml]>=1.8.6",
+    "hypothesis[cli]>=6.147.0",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
 ]

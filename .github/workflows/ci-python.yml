@@ -1,12 +1,16 @@
-name: Continuous Integration Action
+name: Continuous Integration for Python
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   Testing:
-    name: Test package 
+    name: Test main package
     strategy:
       fail-fast: false
       matrix:
@@ -23,7 +27,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           version: 'latest'
           python-version: '3.12'

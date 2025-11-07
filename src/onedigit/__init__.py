@@ -5,7 +5,7 @@ from onedigit.cli2 import cmdline2
 from onedigit.model import Combo, Model
 from onedigit.simple import advance, calculate, get_model
 
-__uri__ = "https://github.com/jzer7/onedigit"
+__uri__ = "https://github.com/jzer7/onedigit-py"
 __version__ = "0.2.0"
 
 
