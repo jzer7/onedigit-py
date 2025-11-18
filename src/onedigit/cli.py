@@ -68,10 +68,10 @@ def main(
 
     # ------------------------------------------------------------
     if not isinstance(input_filename, str):
-        logger.error("input_filename is not valid")
+        logger.error("input_filename is not valid")  # type: ignore
 
     if not isinstance(output_filename, str):
-        logger.error("output_filename is not valid")
+        logger.error("output_filename is not valid")  # type: ignore
     if not output_filename:
         tz = datetime.UTC
         t = datetime.datetime.now(tz)

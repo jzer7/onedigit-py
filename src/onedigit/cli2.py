@@ -4,7 +4,6 @@
 import argparse
 import datetime
 import json
-import sys
 from typing import Optional
 
 from .logger import get_logger
@@ -276,7 +275,3 @@ def _main(
             print(f"{c.value:>4} = {c.expr_simple:<15}   [{c.cost:>3}]")
 
     return True
-
-
-if __name__ == "__main__":
-    sys.exit(0 if cmdline2() else 1)
