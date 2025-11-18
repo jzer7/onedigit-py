@@ -27,6 +27,7 @@ class Test_Combo(unittest.TestCase):
         expr4 = expr3.replace("√", "math.isqrt")
 
         # FIXME: need to handle factorial
+        # FIXME: need a safe way to evaluate expressions
         result = eval(expr4)
 
         assert result == expect

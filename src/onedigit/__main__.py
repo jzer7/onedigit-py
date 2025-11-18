@@ -2,6 +2,6 @@
 
 import sys
 
-from .cli2 import cmdline2
+from .cli import app
 
-sys.exit(0 if cmdline2() else 1)
+sys.exit(0 if app() else 1)

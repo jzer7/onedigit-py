@@ -1,7 +1,7 @@
 """Evaluate expressions that use a single digit from 1 to 9, and basic arithmetic operations."""
 
-from onedigit.cli import main
-from onedigit.cli2 import cmdline2
+from onedigit.cli import app
+from onedigit.cli_v0 import app_old
 from onedigit.model import Combo, Model
 from onedigit.simple import advance, calculate, get_model
 
@@ -14,8 +14,8 @@ __all__ = [
     "Combo",
     "Model",
     "advance",
+    "app",
+    "app_old",
     "calculate",
-    "cmdline2",
     "get_model",
-    "main",
 ]
