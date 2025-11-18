@@ -1,27 +1,87 @@
 {
+    "editor.fontLigatures": false,
     "editor.renderWhitespace": "boundary",
+    "editor.rulers": [
+        80,
+        100
+    ],
     "files.exclude": {
         "**/__pycache__": true,
+        "**/.benchmarks": true,
         "**/.coverage": true,
+        "**/.DS_Store": true,
         "**/.hypothesis": true,
+        "**/.idea": true,
         "**/.mypy_cache": true,
         "**/.pdm-build": true,
         "**/.pdm-python": true,
         "**/.pytest_cache": true,
+        "**/.python-version": true,
         "**/.pytype": true,
         "**/.ruff_cache": true,
-        "**/.venv": true,
+        "**/.task": true,
+        "**/.venv*": true,
+        "**/*.db": true,
         "**/*.egg-info": true,
+        "**/*.skip": true,
         "**/*.swp": true,
+        "**/*.whl": true,
+        "**/backups": true,
+        "**/build": true,
+        "**/celerybeat*": true,
+        "**/coverage*": true,
+        "**/dist": true,
+        "**/htmlcov/[cfksz]*": true,
         "**/pdm.lock": true,
+        "**/tags": true,
         "**/uv.lock": true,
     },
-    "python.analysis.typeCheckingMode": "basic",
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[markdown]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+    },
+    "markdown.validate.enabled": true,
+    "markdownlint.config": {
+        "MD029": false,
+        "MD033": false,   // Allow inline HTML, as we prefer "<br>" over trailing spaces
+    },
+    "peacock.color": "#0c0c5f", // intense blue
+    "peacock.remoteColor": "#8f1010",
     "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll": "explicit",
+        },
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,
-        "editor.formatOnSaveMode": "modifications",
     },
+    "python.analysis.autoImportCompletions": false, // Bad when Copilot is ON
+    "python.analysis.typeCheckingMode": "standard",
+    "python.linting.enabled": true,
+    "python.terminal.shellIntegration.enabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
     "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false
+    "python.testing.unittestEnabled": false,
+    "ruff.organizeImports": true,
+    "search.showLineNumbers": true,
+    "search.useIgnoreFiles": true,
+    "terminal.integrated.hideOnStartup": "whenEmpty",
+    "window.restoreWindows": "none",
+    "window.title": "${activeEditorMedium}${separator}${rootName}${separator}${profileName}",
+    "workbench.colorCustomizations": {
+    },
+    "[yaml]": {
+        "editor.autoIndent": "advanced"
+    },
+    "yaml.format.bracketSpacing": false,
+    "yaml.format.enable": true,
 }

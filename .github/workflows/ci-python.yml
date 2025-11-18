@@ -8,12 +8,21 @@ on:
     branches:
       - main
 
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+
 jobs:
-  Testing:
+  test:
     name: Test main package
     strategy:
       fail-fast: false
       matrix:
+        python-version:
+          - "3.12"
+          - "3.14"
         os:
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
@@ -22,33 +31,31 @@ jobs:
       contents: read
 
     steps:
-
       - name: Check out the code
         uses: actions/checkout@v5
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
-          version: 'latest'
-          python-version: '3.12'
+          version: "latest"
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Task
+        uses: go-task/setup-task@v1
+        with:
+          version: 3.45.x
 
       - name: Install Python dependencies
-        run: uv sync --all-groups
+        run: task setup
 
       - name: Static analysis on main code
-        run: |
-          CODEBASE=src make format-check
-          CODEBASE=src make static
+        run: task check:code
 
-      # Run static analysis on tests separately. 
+      # Run static analysis on tests separately.
       # Some tools inject knowledge of the main codebase into tests, which is acceptable for CI.
       # However, IDEs may not do this, so we validate types in tests independently.
       - name: Static analysis on tests
-        run: |
-          CODEBASE=tests make format-check
-          CODEBASE=tests make static
+        run: task check:tests
 
-      - name: Run unit tests on codebase (pytest)
-        run: |
-          make unittest-verbose
-          make unittest-coverage
+      - name: Run tests on codebase (pytest)
+        run: task test

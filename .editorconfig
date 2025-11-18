@@ -1,6 +1,5 @@
-# https://EditorConfig.org/
+# http://editorconfig.org
 
-# top-most EditorConfig file
 root = true
 
 [*]
@@ -10,32 +9,34 @@ end_of_line = lf
 indent_size = 2
 indent_style = space
 
-[*.json]
-indent_size = 2
+insert_final_newline = true
 trim_trailing_whitespace = true
+
+[*.{bash,sh,zsh}]
+indent_size = 4
+
+[*.{json,jsonc,json5}]
+indent_size = 2
+
+[LICENSE]
+insert_final_newline = false
+
+[{Makefile*,*.mk}]
+indent_size = unset
+indent_style = tab
 
 [*.md]
 indent_size = 2
-indent_style = space
-insert_final_newline = true
 max_line_length = 90
 trim_trailing_whitespace = false
 x-soft-wrap-text = true
 
-[{Makefile*,*.mk}]
-indent_size = 8
-indent_style = tab
-insert_final_newline = true
-
 [*.py]
 indent_size = 4
-indent_style = space
-insert_final_newline = true
-trim_trailing_whitespace = true
+max_line_length = 90
 
 [*.toml]
 indent_size = 4
-indent_style = space
-insert_final_newline = true
-trim_trailing_whitespace = true
 
+[*.{yaml,yml}]
+indent_size = 2

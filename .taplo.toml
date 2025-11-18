@@ -1,0 +1,12 @@
+# https://taplo.tamasfe.dev/
+
+[formatting]
+align_entries         = true
+align_comments        = true
+array_auto_collapse   = false
+column_width          = 80
+indent_string         = "    "
+indent_tables         = false
+reorder_arrays        = false
+reorder_inline_tables = false
+reorder_keys          = false

@@ -1,8 +1,18 @@
 {
     "recommendations": [
+        "bierner.github-markdown-preview",
         "charliermarsh.ruff",
+        "davidanson.vscode-markdownlint",
+        "editorconfig.editorconfig",
+        "hediet.vscode-drawio",
+        "GitHub.copilot",
         "KevinRose.vsc-python-indent",
         "ms-python.mypy-type-checker",
-        "ms-python.python"
+        "ms-python.python",
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker",
+        "tamasfe.even-better-toml",
+        "task.vscode-task",
+        "timonwong.shellcheck",
     ]
 }

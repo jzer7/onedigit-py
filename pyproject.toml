@@ -1,11 +1,11 @@
 [build-system]
-requires = ["flit_core >=3.11,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name            = "onedigit"
-dynamic         = ["version"]
-description     = "Onedigit arithmetic puzzle"
+version         = "0.2.0"
+description     = "One-digit arithmetic puzzle solver"
 authors         = [
     { name = "Juan Rubio", email = "jcrubio@gmail.com" },
 ]
@@ -18,21 +18,42 @@ keywords        = [
 ]
 classifiers     = [
     "Environment :: Console",
-    "Intended Audience :: End Users/Desktop",
-    "Private :: Do Not Upload",
     "Topic :: Games/Entertainment :: Puzzle Games",
 ]
 requires-python = ">=3.12"
 dependencies    = [
+    "click>=8.3.1",
+    "colorlog>=6.10.1",
     "fire>=0.7.1",
+    "pydantic[email]>=2.12.4",
 ]
 
+[dependency-groups]
+dev = [
+    "bandit[toml]>=1.9.1",
+    "hypothesis[cli]>=6.148.1",
+    "mypy>=1.18.2",
+    "pytest>=9.0.1",
+    "pytest-benchmark>=5.2.3",
+    "pytest-cov>=7.0.0",
+    "pytest-subtests>=0.15.0",
+    "pytest-timeout>=2.4.0",
+    "ruff>=0.14.5",
+    "ty>=0.0.1a26",
+    "uv-bump>=0.3.1",
+    "vulture>=2.14",
+]
+
+[project.scripts]
+onedigit  = "onedigit.cli:app"
 
 [tool.bandit]
 exclude_dirs = [
-    "tests",
     ".git",
     ".venv"
+]
+skips = [
+    "B101"      # Using asserts is needed for tests
 ]
 
 [tool.coverage.html]
@@ -46,10 +67,41 @@ disallow_incomplete_defs    = true
 disallow_untyped_decorators = true
 disallow_untyped_defs       = true # TOP
 no_implicit_optional        = true
+show_column_numbers         = true
 show_error_codes            = true
+strict                      = true
+strict_bytes                = true
 warn_redundant_casts        = true
 warn_return_any             = true
+warn_unreachable            = true
 warn_unused_ignores         = true
+
+[tool.pytest.ini_options]
+addopts = """\
+    -vv
+    --no-cov-on-fail
+    --cov=onedigit
+    --cov-fail-under=80.0
+    --strict-config
+    --strict-markers
+    """
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
+norecursedirs = [
+    ".*",
+    "backups",
+    "build",
+    "dist",
+    "docs",
+    "testdata",
+]
+pythonpath = ["src"]
+testpaths = [
+    "tests",
+]
+xfail_strict = true
 
 [tool.ruff]
 line-length = 120
@@ -65,14 +117,7 @@ extend-select = [
 
 [tool.ruff.lint.pydocstyle]
 
-[dependency-groups]
-lint = [
-    "mypy>=1.18.2",
-    "ruff>=0.14.4",
-]
-test = [
-    "bandit[toml]>=1.8.6",
-    "hypothesis[cli]>=6.147.0",
-    "pytest>=8.4.2",
-    "pytest-cov>=7.0.0",
-]
+[tool.setuptools]
+
+[tool.setuptools.dynamic]
+
