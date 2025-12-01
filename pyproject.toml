@@ -25,21 +25,21 @@ dependencies    = [
     "click>=8.3.1",
     "colorlog>=6.10.1",
     "fire>=0.7.1",
-    "pydantic[email]>=2.12.4",
+    "pydantic[email]>=2.12.5",
 ]
 
 [dependency-groups]
 dev = [
-    "bandit[toml]>=1.9.1",
-    "hypothesis[cli]>=6.148.1",
-    "mypy>=1.18.2",
+    "bandit[toml]>=1.9.2",
+    "hypothesis[cli]>=6.148.5",
+    "mypy>=1.19.0",
     "pytest>=9.0.1",
     "pytest-benchmark>=5.2.3",
     "pytest-cov>=7.0.0",
     "pytest-subtests>=0.15.0",
     "pytest-timeout>=2.4.0",
-    "ruff>=0.14.5",
-    "ty>=0.0.1a26",
+    "ruff>=0.14.7",
+    "ty>=0.0.1a29",
     "uv-bump>=0.3.1",
     "vulture>=2.14",
 ]
