@@ -32,18 +32,18 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+
+      - name: Install Task
+        uses: go-task/setup-task@v1
+        with:
+          version: 3.45.x
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
           version: "latest"
           python-version: ${{ matrix.python-version }}
-
-      - name: Install Task
-        uses: go-task/setup-task@v1
-        with:
-          version: 3.45.x
 
       - name: Install Python dependencies
         run: task setup
