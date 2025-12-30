@@ -1,70 +1,145 @@
 # Development
 
+This document describes how to set up a development environment for this project, the conventions used, and how to run tests and checks.
+
+VS Code is the main IDE used, but any editor is suitable.
+
 ## Conventions
 
-- File settings are specified in [.editorconfig](.editorconfig).
-  I use VS Code for large projects, but use other editors on ocasion.
-  Most understand the [editorconfig format](https://editorconfig.org/).
+### Environment
 
-- Markdown for documentation.
+- Python 3.12 or higher.
 
-- Python
+### Code Style
 
-- [`uv`](https://github.com/astral-sh/uv) for dependency management.
-  It writes dependencies in the [pyproject.toml](https://packaging.python.org/en/latest/specifications/pyproject-toml/), which most modern build tools can understand.
+- This project follows [PEP 8](https://peps.python.org/pep-0008/) for Python code style and [PEP 257](https://peps.python.org/pep-0257/) for docstrings whenever practical.
 
-- Static checkers and linters. I have not seen a single solution.
-  [ruff](https://docs.astral.sh/ruff/) for main checks.
-  [mypy](https://mypy-lang.org/) for type checking,
-  [bandit](https://bandit.readthedocs.io/) for security, and
+### Dependency Management
 
-- Formatters: ruff for Python, [mdformat](https://mdformat.readthedocs.io/) for markdown, [taplo](https://taplo.tamasfe.dev/cli/introduction.html) for TOML.
+- [`uv`](https://github.com/astral-sh/uv) is used for dependency and virtual environment management. Dependencies are written to [pyproject.toml](https://packaging.python.org/en/latest/specifications/pyproject-toml/), following the standard Python packaging format.
 
-- Tests with [pytest](https://docs.pytest.org/).
-  To reduce effort, also use [hypothesis](https://hypothesis.readthedocs.io/) to generate test inputs.
+### Documentation
 
-## Basic
+- Markdown is used for all documentation.
 
-To get system up and running:
+### Static Checkers and Linters
 
-```sh
-git clone https://github.com/jzer7/onedigit-py.git
-cd digit
-uv sync --all-groups
-```
+This project uses several tools for code quality:
 
-To check health of the codebase:
+- [ruff](https://docs.astral.sh/ruff/) for main checks
+- [mypy](https://mypy-lang.org/) for type checking
+- [bandit](https://bandit.readthedocs.io/) for security
+- [vulture](https://vulture.readthedocs.io/) for dead code detection
 
-```sh
-uv run ruff check
-uv run pytest
-```
+### Tests
 
-To build package:
+- [pytest](https://docs.pytest.org/) is used for testing.
+- [hypothesis](https://hypothesis.readthedocs.io/) is used to generate test inputs and improve coverage.
 
-```sh
-uv build
-ls -lt dist
-```
+### Formatters
 
-## Continuous Integration
+- File formatting settings are specified in [.editorconfig](../.editorconfig), which is supported by most editors.
+- [ruff](https://docs.astral.sh/ruff/) is used for Python code formatting.
+- [prettier](https://prettier.io/) is used for Markdown files.
 
-CI is done by GitHub Actions.
-Look at the definition on [ci.yml](../.github/workflows/ci.yml).
+### Continuous Integration
 
-## Local checks
+- GitHub Actions is used for CI. See the workflow definition in [ci-python.yml](../.github/workflows/ci-python.yml).
 
-To check results of code on your work directory run these:
+### Branching and Commit Conventions
 
-```sh
-make tests
-```
+- [GitHub Flow](https://docs.github.com/en/get-started/quickstart/github-flow) is used for branching.
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) is used for commit messages.
 
-For convenience, there are also targets that split that.
+## Setting up the development environment
 
-Once you are ready to submit your PR, it helps to simulate the GitHub Actions work locally.
-You will need [act](https://nektosact.com/).
+### Prerequisites
 
-```sh
-act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j Testing --rm
-```
+- Install preferred tools:
+  - [`task`](https://taskfile.dev/) for task automation.
+    [Installation instructions](https://taskfile.dev/docs/installation).
+
+  - [`uv`](https://github.com/astral-sh/uv) for virtual environment management.
+    [Installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
+
+### Setup
+
+- Clone the repository
+
+  ```sh
+  git clone https://github.com/jzer7/onedigit-py.git
+  cd onedigit-py
+  ```
+
+- Setup the environment
+
+  ```sh
+  task setup
+  ```
+
+## Common tasks
+
+Development tasks are automated using `task`.
+Here are the main ones:
+
+| Action                  | Command         |
+| ----------------------- | --------------- |
+| Setup the environment   | `task setup`    |
+| Run tests               | `task test`     |
+| Run tests with coverage | `task coverage` |
+| Run static checkers     | `task check`    |
+| Format the code         | `task format`   |
+| Build the package       | `task build`    |
+| Clean up artifacts      | `task clean`    |
+
+Additional tasks are available for running individual checks and operations.
+Use `task --list` to see available tasks.
+
+## Development flow
+
+## Development Flow
+
+Once the development environment is set up, follow these steps:
+
+1. Create a new branch for your changes:
+
+   ```sh
+   git checkout -b my-feature-branch
+   ```
+
+2. Make your changes.
+3. Run tests to verify your changes:
+
+   ```sh
+   task test
+   ```
+
+4. Before committing, run all static checks and format the code:
+
+   ```sh
+   task check
+   task format
+   ```
+
+5. Commit your changes with a descriptive message:
+
+   ```sh
+   git add .
+   git commit -m "feat: new feature description"
+   ```
+
+6. (Optional) Before submitting your PR, you can verify that CI checks will pass by simulating the GitHub Actions workflow locally.
+   You will need [act](https://nektosact.com/):
+
+   ```sh
+   task actions
+   ```
+
+   This will run the `test` job defined in the GitHub Actions workflow.
+
+   To run a different job, use:
+
+   ```sh
+   task actions:list-jobs            # lists available jobs
+   task actions ACT_JOB=<job_name>   # overrides the job to run
+   ```
