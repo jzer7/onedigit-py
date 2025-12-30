@@ -1,92 +1,107 @@
 # Single Digit Combinations
 
-This is a number puzzle I saw in a newspaper when I was a kid.
-I do not know the official name of the game,
-but its objective is to find the _smallest expression_ that produces a value using a single digit.
+As a kid, I saw a number puzzle in a newspaper that intrigued me.
+The objective was to find the smallest expression that produced a given value using only a single digit and basic mathematical operations.
 
-## Background
+This package provides a solver for that puzzle.
 
-It is easier to understand this by looking at a problem.
-Say we are asked to find combinations to produce the number `75`.
-A simple case is using the digit `3`.
+## The Puzzle
 
-1. The number `75` is divisible by `3`, so we would think `3 * 25`, except we cannot use `25`.
-1. So now we need to look for an expression that evaluates to `25`. A good option could be `27 - 2`.
-1. The first term is simply `3 ^ 3`.
-1. Now we need an expression that produces `2` in terms of `3`. We could use `3 - 1`.
-1. And use `3 / 3` to produce that `1`.
+It is easier to understand with an example.
 
-So a valid combination would be $(3 \times (3^3 - (3 - \frac{3}{3})))$.
+> _Using only the digit `3`, and the basic operations of addition, subtraction, multiplication, and division, write an expression that evaluates to the number `75`._
 
-Continuing with this example, we can try another digit, say `6`.
-Notice that `6 * 12` is `72`, which gets us closer to the target.
-So we can think of `75` as `72 + 3`.
-The first term (`72`) is easy (`6 * 12`), but getting the second term, `3`, requires some creative thinking.
-Eventually we end up with something like $(6 \times (6 + 6) + \frac{6 \times 6}{6 + 6})$.
+Some possible combinations might be:
 
-### Scoring
+- $3 + 3 + 3 + ... + 3$ (25 times)
+- $3 \times (3 \times 3 \times 3 - 3) + 3$
+- $3 \times 3 \times 3 \times 3 - 3 - 3$
 
-The cost of a solution is determined by the number of times the digit is used.
-So the solution $(3 \times (3^3 - (3 - \frac{3}{3})))$, has a cost of `6`.
-Likewise, the solution using the digit `6` has a cost of `7`.
+The goal is to find the expression with the lowest cost, where the cost of an expression is determined by the number of times the digit is used.
+This first expression has a cost of `25`, while the second and third expressions have a cost of `6`.
 
-We can improve both solutions.
-One solution for the digit `3` would be $(3 \times 3^3 - 3!)$, which is `81 - 6`, and has a cost of `4`.
-And an improvement on the solution with the digit `6` could be $(\frac{666}{6} - 6 \times 6)$, with a cost of `6`.
+More complex operations can be used to reduce the cost further, such as:
 
-### Operations
+- Concatenation of the base digit (e.g., forming `3333` uses the digit `3` four times, giving a cost of `4`)
+- Exponentiation
+- Square root
+- Factorial
 
-The operations allowed also impact the difficulty of the game.
-Allowing only additions is the most limiting case.
-It makes for an easy game without much challenge.
-For example, using the digit `5`, we can only do:
+| Expression                                | Operations         | Cost |
+| :---------------------------------------- | ------------------ | ---: |
+| $3 + 3 + 3 + ... + 3$ (25 times)          | `+`                |   25 |
+| $33 + 33 + 3 + 3 + 3$                     | `+`, concatenation |    7 |
+| $(3 \times (3 \times 3 \times 3- 3)) + 3$ | `+`, `-`, `*`      |    6 |
+| $(3 \times 3^3 - 3) + 3$                  | `+`, `-`, `*`, `^` |    5 |
+| $(3 \times 3^3) - (3!)$                   | `-`, `*`, `^`, `!` |    4 |
 
-```txt
-10 = 5 + 5
-15 = 5 + 5 + 5
-20 = 5 + 5 + 5 + 5
-25 = 5 + 5 + 5 + 5 + 5
-...
-```
+## Solver
 
-Expanding the operations to allow multiplication results in less costly solutions:
+The solver uses a generative approach to find combinations.
+Starting from the base digit, it applies all possible operations to generate new numbers.
+These new numbers are then used in subsequent steps to generate even more numbers.
+The solver keeps the combinations with the lowest cost for each number generated.
+This process continues for a specified number of steps or until no new numbers can be generated.
 
-```txt
-25 = 5 + 5 + 5 + 5 + 5
+Example:
 
-25 = 5 * 5
-```
+- Generation 1:
+  - `3 = 3` (cost: 1)
+- Generation 2:
+  - `3! = 6` (cost: 1),
+  - `3 * 3 = 9` (cost: 2),
+  - `3 ^ 3 = 27` (cost: 2),
+  - `3 / 3 = 1` (cost: 2),
+  - ...
+- Generation 3:
+  - `3 * 6 = 18` (cost: 2),
+  - `27 + 3 = 30` (cost: 3),
+  - ...
 
-And adding subtraction and division can both generate smaller solutions, and generate numbers we couldn't produce before.
+## Prerequisites
 
-```txt
-20 = 5 * 5 - 5
-4 = 5 - 5/5
-```
+- Python 3.9 or higher
 
-Many magazine versions of the game stop there.
-But online puzzles tend to include more operations.
-I have seen some with exponentiation (`^`), factorial (`!`) and square root (`sqrt`).
-And some even allow concatenation of the digit (example use `3` to produce `33`, with a cost of 2).
-Using those operations results in some expressions that look like mathematical versions of [Rube Goldberg machines](https://en.wikipedia.org/wiki/Rube_Goldberg_machine).
+## Installation
+
+- Preferred method
+
+  Install the package with `pip` (or your preferred package manager).
+  This will make the `onedigit` CLI available in your environment.
+
+  ```sh
+  pip install onedigit
+  ```
+
+- Alternative method
+
+  Clone the repository and install it locally:
+
+  ```sh
+  git clone https://github.com/jzer7/onedigit-py.git
+  cd onedigit-py
+  pip install .
+  ```
+
+- Direct execution
+
+  This package has no external dependencies beyond the Python standard library, so it can also be used by running the `onedigit` script located in the `scripts` directory.
 
 ## Usage
 
-Install the package with `pip` (or your preferred package manager):
+The `onedigit` CLI provides access to the solver.
+Use the `help` option to see all available parameters.
 
 ```sh
-pip install onedigit-py
+onedigit --help
 ```
 
-The script `onedigit` is a CLI to the solver.
-The syntax is:
-
-```txt
-usage: onedigit [-h] [--max-value MAX_VALUE] [--max-cost MAX_COST] 
-                [--max-steps MAX_STEPS] [--full] [--input-filename INPUT_FILENAME] 
+```text
+usage: onedigit [-h] [--max-value MAX_VALUE] [--max-cost MAX_COST]
+                [--max-steps MAX_STEPS] [--full] [--input-filename INPUT_FILENAME]
                 [--output-filename OUTPUT_FILENAME] digit
 
-Calculate number combinations with a single digit.
+Calculate number combinations using a single digit.
 
 positional arguments:
   digit                 The digit to use to generate combinations (1-9)
@@ -97,7 +112,7 @@ options:
                         Largest value for a combination to be shown in the output (default: 9999)
   --max-cost MAX_COST   Maximum cost a combination can have for it to be remembered (default: 2)
   --max-steps MAX_STEPS
-                        Maximum number of generative rounds (default: 5)
+                        Maximum number of generative steps (default: 5)
   --full                Display combinations using full expressions instead of simple values
   --input-filename INPUT_FILENAME
                         JSON file used to preload the model
@@ -105,41 +120,105 @@ options:
                         JSON file used to store the model upon completion
 ```
 
+Note: The default `max-cost` value (2) is intentionally low to prevent accidental long-running computations.
+For meaningful results, explicitly set `--max-cost` to at least match `--max-steps`,
+since expressions in the final generation typically have a cost equal to or greater than the number of steps.
+
 ### Examples
 
 The simplest use is to get combinations using the digit `3`:
 
 ```sh
-./onedigit 3
+onedigit 3
 ```
 
-Show combinations for digit 7 up to 100 and show full expressions:
+Show the full expression for combinations using the digit `7` that result in values up to 100:
 
 ```sh
-./onedigit 7 --max-value 100 --full
+onedigit 7 --max-value 100 --full
 ```
 
-We can output the combinations as a JSON file.
-The JSON format is helpful as we can use [jq](https://jqlang.github.io/jq/) to run queries on the output.
-For example, to generate all combinations with the digit `7` up to `100`, with a cost less than `3`:
+Save combinations as a JSON file:
 
 ```sh
 onedigit 7 --max-value 100 --output-filename example.json
-cat example.json | jq '.combinations[] | select(.cost <= 3) | {"value":.value, "expression":.expr_full}'
 ```
 
-A JSON file can be used to seed a future run.
-This is useful to snapshot progress when looking for combinations of large numbers.
-For example, we can obtain high-quality combinations (low cost) for numbers up to `200`.
-That will be relatively quick as we are limiting the value of numbers we retain.
-Then use those numbers as a starting point to look for combinations of larger numbers.
+### Incremental Computation
+
+Computing combinations for large numbers can be time-consuming due to the exponential growth of possible expressions.
+The solver can be run incrementally by seeding it with results from a previous run.
+This two-stage approach is significantly faster than computing high-cost expressions for large numbers in a single pass.
+
+For example, we can first focus on obtaining high-quality combinations (low cost) for numbers up to `200`, which is relatively quick since we limit the range of values we retain.
+Then we use those results as a starting point to search for combinations of larger numbers.
 
 ```sh
-./onedigit 3 --max-value 200 --max-steps 12 --max-cost 9 --output-filename snapshot_001.json
-./onedigit 3 --max-value 1000 --input-filename snapshot_001.json --output-filename snapshot_002.json
+onedigit 3 --max-value 200 --max-steps 9 --max-cost 9 --output-filename snapshot_001.json
+onedigit 3 --max-value 1000 --max-cost 9 --input-filename snapshot_001.json --output-filename snapshot_002.json
 ```
 
-The above example takes about `0.25s` to generate combinations up to `200` with a maximum cost of `9`, and about `0.2s` to extend that to `1000`.
-Whereas trying to do `1000` directly with a maximum cost of `9` takes about `5s`.
+The above example running in a Raspberry Pi 3, takes about `0.25s` to generate combinations up to `200` with a maximum cost of `9`, and about `0.2s` to extend that to `1000`.
+In contrast, producing expressions up to `1000` directly takes about `5s`.
+
+### Querying the Output
+
+The output JSON file contains all the combinations found.
+It follows the format:
+
+```json
+{
+  "digit": 3,
+  "max_value": 100,
+  "max_cost": 3,
+  "combinations": [
+    {
+      "value": 1,
+      "cost": 2,
+      "expr_simple": "3/3",
+      "expr_full": "(3)/(3)"
+    },
+    {
+      "value": 2,
+      "cost": 2,
+      "expr_simple": "6/3",
+      "expr_full": "(3+3)/(3)"
+    },
+    ...
+  ]
+}
+```
+
+This JSON file enables querying expressions with tools like [jq](https://jqlang.github.io/jq/).
+For example:
+
+- combinations using the digit `7` up to `100`, with a cost of `2`:
+
+  ```sh
+  onedigit 7 --max-value 100 --output-filename example.json
+  cat example.json | jq '.combinations[] | select(.cost == 2)'
+  ```
+
+- sorted by cost and value:
+
+  ```sh
+  cat example.json | jq '.combinations | sort_by(.cost, .value)'
+  ```
+
+- showing only the value and expression:
+
+  ```sh
+  cat example.json | jq '.combinations[] | {"value":.value, "expression":.expr_full}'
+  ```
+
+- combinations not using factorial operation:
+
+  ```sh
+  cat example.json | jq '.combinations[] | select(.expr_full | contains("!") | not)'
+  ```
+
+## Development
+
+Look at the [development guide](docs/development.md) for instructions on setting up a development environment, running tests, and contributing to the project.
 
 木

@@ -7,11 +7,22 @@
     {
       "addWords": true,
       "name": "project",
-      "path": "project.dic"
+      "path": "project.dict"
     }
   ],
-  "ignorePaths": [],
-  "ignoreWords": [],
+  "ignorePaths": [
+      ".git",
+      ".gitignore",
+      "*.drawio",
+      "*.svg"
+  ],
+  "ignoreWords": [
+      "addopts",
+      "cdict",
+      "clogger",
+      "jsenc",
+      "jstxt",
+  ],
   "import": [],
   "language": "en",
   "useGitignore": true,

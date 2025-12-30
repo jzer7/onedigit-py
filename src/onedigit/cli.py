@@ -21,7 +21,7 @@ def _create_parser() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser(
         prog="onedigit",
-        description="Calculate number combinations with a single digit.",
+        description="Calculate number combinations using a single digit.",
         epilog="""
 Examples:
   onedigit 3                      # Use digit 3 with defaults
