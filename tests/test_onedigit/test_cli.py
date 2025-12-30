@@ -9,14 +9,13 @@ from io import StringIO
 from unittest.mock import patch
 
 from onedigit.cli import _create_parser, _main, app
-from onedigit.cli_v0 import app_old as original_main
 
 # This test file focuses on testing the parsing and validation of command line arguments
-# for the cli2 module. It is not an end-to-end test. The actual results of calculations
+# for the 'cli' module. It is not an end-to-end test. The actual results of calculations
 # are tested in other unit tests.
 
 
-class TestCli2(unittest.TestCase):
+class TestCli(unittest.TestCase):
     """Test cases for the new argparse-based CLI."""
 
     def setUp(self) -> None:
@@ -294,37 +293,6 @@ class TestCli2(unittest.TestCase):
                 os.remove(f)
             except OSError:
                 pass
-
-    def test_compatibility_with_original_cli(self) -> None:
-        """Test that new CLI produces same results as original CLI core logic."""
-        # Import the original main function
-
-        # Test with same parameters
-        digit = 3
-        max_value = 10
-        max_cost = 2
-        max_steps = 2
-
-        # Both should return True for valid inputs
-        original_result = original_main(
-            digit=digit,
-            max_value=max_value,
-            max_cost=max_cost,
-            max_steps=max_steps,
-            output_filename="/tmp/test_original.json",
-        )
-
-        new_result = _main(
-            digit=digit,
-            max_value=max_value,
-            max_cost=max_cost,
-            max_steps=max_steps,
-            full=False,
-            input_filename="",
-            output_filename="/tmp/test_new.json",
-        )
-
-        self.assertEqual(original_result, new_result)
 
 
 if __name__ == "__main__":
