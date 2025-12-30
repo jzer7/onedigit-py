@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=42"]
+requires      = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name            = "onedigit"
-version         = "0.2.0"
+version         = "0.3.0"
 description     = "One-digit arithmetic puzzle solver"
 authors         = [
     { name = "Juan Rubio", email = "jcrubio@gmail.com" },
@@ -22,10 +22,7 @@ classifiers     = [
 ]
 requires-python = ">=3.12"
 dependencies    = [
-    "click>=8.3.1",
     "colorlog>=6.10.1",
-    "fire>=0.7.1",
-    "pydantic[email]>=2.12.5",
 ]
 
 [dependency-groups]
@@ -45,15 +42,15 @@ dev = [
 ]
 
 [project.scripts]
-onedigit  = "onedigit.cli:app"
+onedigit = "onedigit.cli:app"
 
 [tool.bandit]
 exclude_dirs = [
     ".git",
-    ".venv"
+    ".venv",
 ]
 skips = [
-    "B101"      # Using asserts is needed for tests
+    "B101",     # Using asserts is needed for tests
 ]
 
 [tool.coverage.html]
@@ -95,7 +92,6 @@ norecursedirs = [
     "build",
     "dist",
     "docs",
-    "testdata",
 ]
 pythonpath = ["src"]
 testpaths = [
@@ -120,4 +116,3 @@ extend-select = [
 [tool.setuptools]
 
 [tool.setuptools.dynamic]
-

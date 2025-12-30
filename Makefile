@@ -50,6 +50,7 @@ unittest-coverage:
 .PHONY: unittest unittest-verbose unittest-coverage
 
 integration:
+	@echo "INFO: Running integration tests"
 
 act:
 	@echo "INFO: Running CI workflow locally with act"
@@ -81,8 +82,7 @@ format-fix:
 
 clean:
 	@echo "INFO: Cleaning up project"
-	-mv "model*.json" data
-	-mv "*.log*" data
+	-mv foo model*.json *.log* data
 	uv run ruff clean
 	rm -rf .pytest_cache .coverage .mypy_cache .hypothesis
 	find . -name __pycache__ -not -path '*/.venv*/*' -exec rm -rf {} \;

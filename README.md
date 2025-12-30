@@ -41,7 +41,7 @@ Allowing only additions is the most limiting case.
 It makes for an easy game without much challenge.
 For example, using the digit `5`, we can only do:
 
-```
+```txt
 10 = 5 + 5
 15 = 5 + 5 + 5
 20 = 5 + 5 + 5 + 5
@@ -51,7 +51,7 @@ For example, using the digit `5`, we can only do:
 
 Expanding the operations to allow multiplication results in less costly solutions:
 
-```
+```txt
 25 = 5 + 5 + 5 + 5 + 5
 
 25 = 5 * 5
@@ -59,7 +59,7 @@ Expanding the operations to allow multiplication results in less costly solution
 
 And adding subtraction and division can both generate smaller solutions, and generate numbers we couldn't produce before.
 
-```
+```txt
 20 = 5 * 5 - 5
 4 = 5 - 5/5
 ```
@@ -70,63 +70,16 @@ I have seen some with exponentiation (`^`), factorial (`!`) and square root (`sq
 And some even allow concatenation of the digit (example use `3` to produce `33`, with a cost of 2).
 Using those operations results in some expressions that look like mathematical versions of [Rube Goldberg machines](https://en.wikipedia.org/wiki/Rube_Goldberg_machine).
 
-## Solver
-
-For the solver, I am using monotonic operations at first.
-That allows us to have a _directed acyclic graph_ (DAG).
-
-To get past the first limitation, I will also allow the use of the number `1` at cost of 2 (the result of `5/5`).
-
 ## Usage
+
+Install the package with `pip` (or your preferred package manager):
+
+```sh
+pip install onedigit-py
+```
 
 The script `onedigit` is a CLI to the solver.
 The syntax is:
-
-```txt
-onedigit [OPTIONS]
-
-Options:
-  --digit <number>              digit to use for expressions
-  --max_value <number>          largest number to report
-  --max_steps <number>          number of iterations
-  --max_cost <number>           largest cost for an expression to be used
-  --full                        show combinations in terms of the digit, otherwise use expanded values
-  --input_filename <filename>   import a JSON file that describes the model
-  --output_filename <filename>  name of a JSON used for the output, an automatic name would be used otherwise.
-  --help                        this information
-```
-
-### Examples
-
-The simplest use is to get combinations using the digit `3`.
-
-```sh
-onedigit --digit 3
-```
-
-To see the default values:
-
-```sh
-onedigit --help
-```
-
-The JSON format is helpful as we can use [jq](https://jqlang.github.io/jq/) to run queries on the output.
-For example, to generate all combinations with the digit `7` up to `100`, with a cost less than '3'.
-
-```sh
-onedigit --digit 7 --max_value 100 --output_filename foo.json
-cat foo.json | jq '.[] | select(.cost <= 3) | {"value":.value, "expression":.expr_full}'
-```
-
-## Alternative CLI (cli2.py)
-
-This project also includes an alternative CLI implementation (`cli2.py`) that uses Python's `argparse` instead of the `fire` library. This provides a more traditional command-line interface experience.
-
-Note that the argument names in `cli2` use dashes instead of underscores (e.g., `--max-value` instead of `--max_value`).
-
-### Usage
-
-The script `onedigit2` provides the same functionality as `onedigit` but with standard argparse-style arguments:
 
 ```txt
 usage: onedigit [-h] [--max-value MAX_VALUE] [--max-cost MAX_COST] 
@@ -157,21 +110,36 @@ options:
 The simplest use is to get combinations using the digit `3`:
 
 ```sh
-./onedigit2 3
+./onedigit 3
 ```
 
-Show combinations for digit 7 up to 100 with full expressions:
+Show combinations for digit 7 up to 100 and show full expressions:
 
 ```sh
-./onedigit2 7 --max-value 100 --full
+./onedigit 7 --max-value 100 --full
 ```
 
-Load model from file and save results:
+We can output the combinations as a JSON file.
+The JSON format is helpful as we can use [jq](https://jqlang.github.io/jq/) to run queries on the output.
+For example, to generate all combinations with the digit `7` up to `100`, with a cost less than `3`:
 
 ```sh
-./onedigit2 3 --input-filename input.json --output-filename results.json
+onedigit 7 --max-value 100 --output-filename example.json
+cat example.json | jq '.combinations[] | select(.cost <= 3) | {"value":.value, "expression":.expr_full}'
 ```
 
-Both CLI implementations (`onedigit` and `onedigit2`) produce identical results and support the same functionality.
+A JSON file can be used to seed a future run.
+This is useful to snapshot progress when looking for combinations of large numbers.
+For example, we can obtain high-quality combinations (low cost) for numbers up to `200`.
+That will be relatively quick as we are limiting the value of numbers we retain.
+Then use those numbers as a starting point to look for combinations of larger numbers.
+
+```sh
+./onedigit 3 --max-value 200 --max-steps 12 --max-cost 9 --output-filename snapshot_001.json
+./onedigit 3 --max-value 1000 --input-filename snapshot_001.json --output-filename snapshot_002.json
+```
+
+The above example takes about `0.25s` to generate combinations up to `200` with a maximum cost of `9`, and about `0.2s` to extend that to `1000`.
+Whereas trying to do `1000` directly with a maximum cost of `9` takes about `5s`.
 
 木
