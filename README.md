@@ -221,4 +221,8 @@ For example:
 
 Look at the [development guide](docs/development.md) for instructions on setting up a development environment, running tests, and contributing to the project.
 
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
 木
