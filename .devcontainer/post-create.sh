@@ -105,11 +105,12 @@ update_or_create_sym_link "$VENV_DIR" "$VENV_LINK_NAME" || die "Could not create
 
 export UV_PROJECT_ENVIRONMENT="$VENV_DIR"
 echo "export UV_PROJECT_ENVIRONMENT=$VENV_DIR" >> "$HOME/.profile"
+echo "export UV_PROJECT_ENVIRONMENT=$VENV_DIR" >> "$HOME/.bashrc"
 
 ## Build the environment, if it doesn't exist
 uv venv --allow-existing "$VENV_DIR"
 
-# 5. Install packages, without chaning the lockfile
+# 5. Install packages, without changing the lockfile
 if [ -e uv.lock ]; then
   uv sync --locked
   uv sync --locked --all-groups
