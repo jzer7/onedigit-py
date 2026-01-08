@@ -4,6 +4,7 @@ version: "3"
 
 vars:
   PYTHON_VERSION: '3.12'
+  ACT_JOB: 'test'
 
 tasks:
 
@@ -36,7 +37,7 @@ tasks:
 
   check:
     cmds:
-      - task: clean
+      - task: clean:common
       - task: check:ruff
       - task: check:ruff:tests
       - task: check:format
@@ -49,16 +50,19 @@ tasks:
 
   check:code:
     cmds:
-      - task: clean
+      - task: clean:common
       - task: check:ruff
       - task: check:mypy
+      - task: check:bandit
+      - task: check:vulture
     desc: run all checks on application code
 
   check:tests:
     cmds:
-      - task: clean
+      - task: clean:common
       - task: check:ruff:tests
       - task: check:mypy:tests
+      - task: check:bandit:tests
     desc: run all checks on test code
 
   # --------------------------------------------------------
@@ -141,7 +145,7 @@ tasks:
 
   fix:format:docs:
     cmds:
-      - prettier --write ./**/*.md
+      - prettier --write '**/*.md'
     desc: format code, tests and documentation files
 
   # --------------------------------------------------------
@@ -154,8 +158,12 @@ tasks:
     desc: dryrun of the GitHub actions to verify they syntax is correct
     vars:
       ACT_IMAGE: 'catthehacker/ubuntu:act-latest'
-      ACT_JOB:   'test'
       ACT_ARGS:  '-P ubuntu-latest={{.ACT_IMAGE}} --rm --verbose'
+
+  actions:list-jobs:
+    cmds:
+      - act --list
+    desc: list available GitHub actions jobs
 
   actions:
     cmds:
@@ -163,7 +171,6 @@ tasks:
     desc: run the GitHub actions locally to verify they work
     vars:
       ACT_IMAGE: 'catthehacker/ubuntu:act-latest'
-      ACT_JOB:   'test'
       ACT_ARGS:  '-P ubuntu-latest={{.ACT_IMAGE}} --rm --verbose'
 
   # --------------------------------------------------------
@@ -179,6 +186,7 @@ tasks:
     desc: run all tests
 
   test:coverage:
+    aliases: [coverage]
     cmds:
       - uv run pytest --cov=src --cov-report=term-missing tests
     desc: run unit tests with coverage report
@@ -236,6 +244,8 @@ tasks:
       - uv lock --upgrade
       - uv sync --all-groups --dry-run
       - uv sync --all-groups
+      - uv run uv-bump
+      - uv lock --upgrade
     desc: update all Python dependencies to their latest versions
 
   # --------------------------------------------------------
@@ -250,26 +260,65 @@ tasks:
 
   build:
     cmds:
-      - task: clean
+      - task: clean:common
       - uv build
     generates:
       - dist/*
     desc: build the project (source and wheel distributions)
 
-  clean:
+  clean:python:
     cmds:
-      - echo "[CLEAN] cleaning up Python cache files and directories..."
+      - echo "[CLEAN] cleaning up Python artifacts..."
       - find . -type d -name "__pycache__" -exec rm -r {} +
       - find . -type f -name "*.pyc" -delete
       - find . -type f -name "*.pyo" -delete
       - find . -type f -name "*~" -delete
-      - rm -rf .benchmarks
-      - rm -rf .coverage coverage.xml
+    desc: clean up Python artifacts
+
+  clean:build:
+    cmds:
+      - echo "[CLEAN] removing build artifacts..."
+      - find . -type d -name "*.egg-info" -exec rm -r {} +
+      - rm -rf build/
+      - rm -rf dist/
+    desc: clean up build artifacts
+
+  clean:tooling:
+    cmds:
+      - echo "[CLEAN] removing tooling caches and artifacts..."
+      - rm -rf .hypothesis
       - rm -rf .mypy_cache
       - rm -rf .pytest_cache
       - rm -rf .ruff_cache
+      - rm -rf .benchmarks
+      - rm -rf .coverage coverage.xml coverage_html_report
+      - rm -rf .task
       - rm -rf htmlcov
-    desc: clean up Python cache files and directories
+    desc: clean up tooling caches and artifacts
+
+  clean:logs:
+    cmds:
+      - echo "[CLEAN] removing log and snapshot files..."
+      - find . -type f -maxdepth 1 -name "*.log*" -delete
+      - find . -type f -maxdepth 1 -name "model.*.json" -delete
+    desc: clean up log and snapshot files
+
+  clean:common:
+    aliases: [clean]
+    cmds:
+      - echo "[CLEAN] removing most common artifacts..."
+      - task: clean:build
+      - task: clean:python
+
+  clean:full:
+    cmds:
+      - echo "[CLEAN] performing full clean up including produced artifacts..."
+      - rm -rf .venv
+      - task: clean:build
+      - task: clean:tooling
+      - task: clean:python
+      - task: clean:logs
+    desc: full clean up including produced artifacts
 
   # --------------------------------------------------------
   # Other
