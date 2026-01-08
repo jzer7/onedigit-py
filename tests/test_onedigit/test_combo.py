@@ -6,11 +6,7 @@ from hypothesis import strategies as hst
 
 import onedigit
 
-# class Combo:
-#     value: int
-#     cost: int = 0  # (set to 10**9 if empty)
-#     expr_full: str = ""  # (set to str(value) if empty)
-#     expr_simple: str = ""  # (set to str(value) if empty)
+# For an explanation of the Combo class, look at `docs/solver.md#combo-representation`.
 
 
 class Test_Combo(unittest.TestCase):
@@ -18,26 +14,37 @@ class Test_Combo(unittest.TestCase):
         # Expression must evaluate to the expected value
 
         # Handle integer exponentiation
-        expr2 = expr.replace("^", "**")
+        expr_mod = expr.replace("^", "**")
 
         # TODO: need to handle integer division in a cleaner way
-        expr3 = expr2.replace("/", "//")
+        expr_mod = expr_mod.replace("/", "//")
 
         # TODO: need to handle square root in a cleaner way
-        expr4 = expr3.replace("√", "math.isqrt")
+        expr_mod = expr_mod.replace("√", "math.isqrt")
 
         # FIXME: need to handle factorial
         # FIXME: need a safe way to evaluate expressions
-        result = eval(expr4)
+        try:
+            # Evaluate the expression
+            result = eval(expr_mod, {"math": math})
+        except Exception as e:
+            raise AssertionError(f"Expression `{expr}` modified to `{expr_mod}` failed to evaluate: {e}")
+
+        assert isinstance(result, (int, float))
+        if isinstance(result, float):
+            assert result.is_integer()
+            result = int(result)
 
         assert result == expect
 
-    def check_combo(self, combo1: onedigit.Combo, value1: int) -> None:
+    def check_combo(self, combo_obj: onedigit.Combo, target_value: int) -> None:
         # Verify integrity of the object
-        assert combo1.value == value1
-        assert combo1.cost > 1000
-        self.check_expression(combo1.expr_full, value1)
-        self.check_expression(combo1.expr_simple, value1)
+        assert combo_obj.value == target_value
+        self.check_expression(combo_obj.expr_full, target_value)
+        self.check_expression(combo_obj.expr_simple, target_value)
+
+        # HACK: combo_obj is a new object, as such its cost should be high. This check should really be done by the caller of this method.
+        assert combo_obj.cost > 1000
 
     @given(value1=hst.integers())
     def test_combo_positional(self, value1: int) -> None:
@@ -168,7 +175,7 @@ class Test_Combo(unittest.TestCase):
         else:
             self.check_combo(combo4, 0)
 
-    @given(value1=hst.integers(min_value=1), value2=hst.integers(max_value=50))
+    @given(value1=hst.integers(min_value=1), value2=hst.integers(min_value=1, max_value=50))
     def test_combo_integer_exponentiation(self, value1: int, value2: int) -> None:
         combo1 = onedigit.Combo(value1)
         combo2 = onedigit.Combo(value2)
