@@ -23,7 +23,6 @@
         "**/.venv*": true,
         "**/*.db": true,
         "**/*.egg-info": true,
-        "**/*.skip": true,
         "**/*.swp": true,
         "**/*.whl": true,
         "**/backups": true,
@@ -36,33 +35,18 @@
         "**/tags": true,
         "**/uv.lock": true,
     },
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    "[json]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    "[markdown]": {
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": true,
-    },
     "markdown.validate.enabled": true,
     "markdownlint.config": {
-        "MD029": false,
-        "MD033": false,   // Allow inline HTML, as we prefer "<br>" over trailing spaces
+        "default": true,
+        "MD012": false,   // Disable: no-multiple-blanks (empty lines improve readability)
+        "MD022": false,   // Disable: blank-around-heading
+        "MD029": false,   // Disable: Ordered list item prefix
+        "MD033": false,   // Disable: no-inline HTML (needed to use "<br>" over trailing spaces)
     },
-    "peacock.color": "#0c0c5f", // intense blue
-    "peacock.remoteColor": "#8f1010",
     "[python]": {
-        "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit",
-            "source.fixAll": "explicit",
-        },
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,
     },
-    "python.analysis.autoImportCompletions": false, // Bad when Copilot is ON
     "python.analysis.typeCheckingMode": "standard",
     "python.linting.enabled": true,
     "python.terminal.shellIntegration.enabled": true,
@@ -72,13 +56,6 @@
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "ruff.organizeImports": true,
-    "search.showLineNumbers": true,
-    "search.useIgnoreFiles": true,
-    "terminal.integrated.hideOnStartup": "whenEmpty",
-    "window.restoreWindows": "none",
-    "window.title": "${activeEditorMedium}${separator}${rootName}${separator}${profileName}",
-    "workbench.colorCustomizations": {
-    },
     "[yaml]": {
         "editor.autoIndent": "advanced"
     },
