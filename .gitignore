@@ -190,8 +190,9 @@ pyrightconfig.json
 # PROJECT
 # ----------------------------------------------------------
 
-.specstory
-.task
+.specstory/
+.task/
+.venv-container
 backups/
 model*.json
 tags
