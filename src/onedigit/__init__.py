@@ -1,7 +1,8 @@
 """Evaluate expressions that use a single digit from 1 to 9, and basic arithmetic operations."""
 
 from onedigit.cli import app
-from onedigit.model import Combo, Model
+from onedigit.combo import Combo
+from onedigit.model import Model
 from onedigit.simple import advance, calculate, get_model
 
 __uri__ = "https://github.com/jzer7/onedigit-py"
