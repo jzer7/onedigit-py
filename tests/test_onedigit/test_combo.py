@@ -5,7 +5,8 @@ import unittest
 from hypothesis import given
 from hypothesis import strategies as hst
 
-import onedigit
+from onedigit.combo import Combo
+from onedigit.operations import binary_operation, unary_operation
 
 # For an explanation of the Combo class, look at `docs/solver.md#combo-representation`.
 
@@ -64,7 +65,7 @@ class Test_Combo(unittest.TestCase):
 
         assert result == expect, f"Expression '{expr}' evaluated to {result}, expected {expect}"
 
-    def check_combo(self, combo_obj: onedigit.Combo, target_value: int) -> None:
+    def check_combo(self, combo_obj: Combo, target_value: int) -> None:
         """
         Verify integrity of a Combo object.
 
@@ -91,14 +92,14 @@ class Test_Combo(unittest.TestCase):
 
     @given(value1=hst.integers())
     def test_combo_positional(self, value1: int) -> None:
-        combo1 = onedigit.Combo(value1)
+        combo1 = Combo(value1)
         self.check_combo(combo1, value1)
 
     # For serialization
     @given(value=hst.integers(min_value=1), cost=hst.integers(min_value=1))
     def test_combo_to_dictionary(self, value: int, cost: int) -> None:
         # Create a simple combo, and get its dictionary
-        combo1 = onedigit.Combo(value=value, cost=cost, expr_full=str(value), expr_simple=str(value))
+        combo1 = Combo(value=value, cost=cost, expr_full=str(value), expr_simple=str(value))
         dict1 = combo1.asdict()
 
         # Verify dictionary
@@ -124,7 +125,7 @@ class Test_Combo(unittest.TestCase):
 
     @given(value1=hst.integers())
     def test_combo_repr(self, value1: int) -> None:
-        combo1 = onedigit.Combo(value1)
+        combo1 = Combo(value1)
 
         str1 = str(combo1)
 
@@ -132,8 +133,8 @@ class Test_Combo(unittest.TestCase):
 
     @given(value1=hst.integers(), value2=hst.integers())
     def test_combo_ordering(self, value1: int, value2: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value2)
+        combo1 = Combo(value1)
+        combo2 = Combo(value2)
 
         if value1 > value2:
             assert combo1 > combo2
@@ -149,64 +150,64 @@ class Test_Combo(unittest.TestCase):
 
     @given(value1=hst.integers(), value2=hst.integers())
     def test_combo_addition(self, value1: int, value2: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value2)
+        combo1 = Combo(value1)
+        combo2 = Combo(value2)
 
-        combo3 = combo1.binary_operation(combo2, "+")
-        combo4 = combo2.binary_operation(combo1, "+")
+        combo3 = binary_operation(combo1, combo2, "+")
+        combo4 = binary_operation(combo2, combo1, "+")
 
         self.check_combo(combo3, value1 + value2)
         self.check_combo(combo4, value2 + value1)
 
     @given(value1=hst.integers(), value2=hst.integers())
     def test_combo_subtraction(self, value1: int, value2: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value2)
+        combo1 = Combo(value1)
+        combo2 = Combo(value2)
 
-        combo3 = combo1.binary_operation(combo2, "-")
-        combo4 = combo2.binary_operation(combo1, "-")
+        combo3 = binary_operation(combo1, combo2, "-")
+        combo4 = binary_operation(combo2, combo1, "-")
 
         self.check_combo(combo3, value1 - value2)
         self.check_combo(combo4, value2 - value1)
 
     @given(value1=hst.integers(), value2=hst.integers())
     def test_combo_multiplication(self, value1: int, value2: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value2)
+        combo1 = Combo(value1)
+        combo2 = Combo(value2)
 
-        combo3 = combo1.binary_operation(combo2, "*")
-        combo4 = combo2.binary_operation(combo1, "*")
+        combo3 = binary_operation(combo1, combo2, "*")
+        combo4 = binary_operation(combo2, combo1, "*")
 
         self.check_combo(combo3, value1 * value2)
         self.check_combo(combo4, value2 * value1)
 
     @given(value1=hst.integers())
     def test_combo_integer_division_by_zero(self, value1: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(0)
+        combo1 = Combo(value1)
+        combo2 = Combo(0)
 
         with self.assertRaises(expected_exception=ZeroDivisionError):
-            combo3 = combo1.binary_operation(combo2, "/")
+            combo3 = binary_operation(combo1, combo2, "/")
             assert combo3.value == 0
 
     @given(value1=hst.integers(min_value=1))
     def test_combo_integer_division_by_one(self, value1: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value1)
+        combo1 = Combo(value1)
+        combo2 = Combo(value1)
 
-        combo3 = combo1.binary_operation(combo1, "/")
-        combo4 = combo1.binary_operation(combo2, "/")
+        combo3 = binary_operation(combo1, combo1, "/")
+        combo4 = binary_operation(combo1, combo2, "/")
 
         self.check_combo(combo3, 1)
         self.check_combo(combo4, 1)
 
     @given(value1=hst.integers(min_value=1), value2=hst.integers(min_value=1))
     def test_combo_integer_division(self, value1: int, value2: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value2)
+        combo1 = Combo(value1)
+        combo2 = Combo(value2)
 
-        combo3 = combo1.binary_operation(combo2, "/")
-        combo4 = combo2.binary_operation(combo1, "/")
+        combo3 = binary_operation(combo1, combo2, "/")
+        combo4 = binary_operation(combo2, combo1, "/")
 
         if (value1 % value2) == 0:
             self.check_combo(combo3, value1 // value2)
@@ -220,11 +221,11 @@ class Test_Combo(unittest.TestCase):
 
     @given(value1=hst.integers(min_value=1), value2=hst.integers(min_value=0, max_value=50))
     def test_combo_integer_exponentiation(self, value1: int, value2: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value2)
+        combo1 = Combo(value1)
+        combo2 = Combo(value2)
 
         # The object method protects against gigantic values.
-        combo3 = combo1.binary_operation(combo2, "^")
+        combo3 = binary_operation(combo1, combo2, "^")
 
         # But we also need to protect the tester from crashing
         # while evaluating that exponentiation.
@@ -236,19 +237,19 @@ class Test_Combo(unittest.TestCase):
 
     @given(value1=hst.integers(min_value=1), value2=hst.integers(max_value=-1))
     def test_combo_integer_exponentiation_negative_exponent(self, value1: int, value2: int) -> None:
-        combo1 = onedigit.Combo(value1)
-        combo2 = onedigit.Combo(value2)
+        combo1 = Combo(value1)
+        combo2 = Combo(value2)
 
-        combo3 = combo1.binary_operation(combo2, "^")
+        combo3 = binary_operation(combo1, combo2, "^")
 
         # Negative exponents are not allowed, thus result should be zero
         self.check_combo(combo3, 0)
 
     @given(value1=hst.integers())
     def test_combo_sqrt(self, value1: int) -> None:
-        combo1 = onedigit.Combo(value1)
+        combo1 = Combo(value1)
 
-        combo2 = combo1.unary_operation("sqrt")
+        combo2 = unary_operation(combo1, "sqrt")
 
         # Should not allow negative numbers
         if value1 < 0:
@@ -264,10 +265,10 @@ class Test_Combo(unittest.TestCase):
 
     @given(value1=hst.integers(max_value=50))
     def test_combo_factorial(self, value1: int) -> None:
-        combo1 = onedigit.Combo(value1)
+        combo1 = Combo(value1)
 
         # The object method protects against gigantic values.
-        combo2 = combo1.unary_operation("!")
+        combo2 = unary_operation(combo1, "!")
 
         # But we also need to protect the tester from crashing
         # while evaluating that factorial.
