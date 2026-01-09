@@ -249,7 +249,11 @@ class Combo:
                 rc_expr_simple = f"{self.value} / {combo2.value}"
 
             case "^":
+                # Prevent immensely large operations
                 if self.value < 0 or combo2.value > 40:
+                    return Combo(value=0)
+                # Prevent irrational values
+                if combo2.value < 0:
                     return Combo(value=0)
 
                 rc_val = self.value**combo2.value
