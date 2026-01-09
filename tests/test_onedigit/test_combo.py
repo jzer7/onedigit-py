@@ -1,4 +1,5 @@
 import math
+import re
 import unittest
 
 from hypothesis import given
@@ -10,40 +11,82 @@ import onedigit
 
 
 class Test_Combo(unittest.TestCase):
-    def check_expression(self, expr: str, expect: int) -> None:
-        # Expression must evaluate to the expected value
+    def combination_to_python_expression(self, expr: str) -> str:
+        """
+        Converts custom mathematical notation to Python-evaluable syntax:
+        - ^ (exponentiation) -> **
+        - / (integer division) -> //
+        - √ (square root) -> math.isqrt
+        - ! (factorial, postfix) -> math.factorial
 
-        # Handle integer exponentiation
+        Args:
+            expr: Expression string using custom notation
+        Returns:
+            Converted expression string suitable for Python eval()
+        """
+        # Convert custom operators to Python syntax
         expr_mod = expr.replace("^", "**")
-
-        # TODO: need to handle integer division in a cleaner way
         expr_mod = expr_mod.replace("/", "//")
-
-        # TODO: need to handle square root in a cleaner way
         expr_mod = expr_mod.replace("√", "math.isqrt")
 
-        # FIXME: need to handle factorial
-        # FIXME: need a safe way to evaluate expressions
-        try:
-            # Evaluate the expression
-            result = eval(expr_mod, {"math": math})
-        except Exception as e:
-            raise AssertionError(f"Expression `{expr}` modified to `{expr_mod}` failed to evaluate: {e}")
+        # Handle factorial (postfix notation): convert "expr!" to "math.factorial(expr)"
+        # First handle parenthesized expressions: (expr)! -> math.factorial(expr)
+        expr_mod = re.sub(r"\(([^)]+)\)!", r"math.factorial(\1)", expr_mod)
+        # Then handle simple numbers: 5! -> math.factorial(5)
+        expr_mod = re.sub(r"(\d+)!", r"math.factorial(\1)", expr_mod)
 
-        assert isinstance(result, (int, float))
+        return expr_mod
+
+    def check_expression(self, expr: str, expect: int) -> None:
+        """
+        Validate that a Python arithmetic expression evaluates to the expected value.
+
+        The evaluation uses a restricted namespace for safety.
+
+        Args:
+            expr: Expression string using custom notation
+            expect: Expected integer result after evaluation
+
+        Raises:
+            AssertionError: If expression fails to evaluate or result doesn't match expected value
+        """
+        try:
+            # Note: Using eval() here is acceptable for test code with controlled input.
+            result = eval(expr, {"__builtins__": {}}, {"math": math})  # nosec B307
+        except Exception as e:
+            raise AssertionError(f"Expression '{expr}' failed to evaluate: {e}")
+
+        # Verify result is an integer matching expected value
+        assert isinstance(result, (int, float)), f"Result {result} is not numeric"
         if isinstance(result, float):
-            assert result.is_integer()
+            assert result.is_integer(), f"Result {result} is not an integer value"
             result = int(result)
 
-        assert result == expect
+        assert result == expect, f"Expression '{expr}' evaluated to {result}, expected {expect}"
 
     def check_combo(self, combo_obj: onedigit.Combo, target_value: int) -> None:
-        # Verify integrity of the object
-        assert combo_obj.value == target_value
-        self.check_expression(combo_obj.expr_full, target_value)
-        self.check_expression(combo_obj.expr_simple, target_value)
+        """
+        Verify integrity of a Combo object.
 
-        # HACK: combo_obj is a new object, as such its cost should be high. This check should really be done by the caller of this method.
+        Args:
+            combo_obj: The Combo object to validate
+            target_value: Expected value of the combo and its expressions
+
+        Raises:
+            AssertionError: If any validation check fails
+        """
+        # Verify the computed value matches expected
+        assert combo_obj.value == target_value
+
+        # Verify both expression formats evaluate to the target value
+        py_expr_full = self.combination_to_python_expression(combo_obj.expr_full)
+        py_expr_simple = self.combination_to_python_expression(combo_obj.expr_simple)
+
+        self.check_expression(py_expr_full, target_value)
+        self.check_expression(py_expr_simple, target_value)
+
+        # HACK: combo_obj is a new object, as such its cost should be high.
+        # This check should really be done by the caller of this method.
         assert combo_obj.cost > 1000
 
     @given(value1=hst.integers())
@@ -175,7 +218,7 @@ class Test_Combo(unittest.TestCase):
         else:
             self.check_combo(combo4, 0)
 
-    @given(value1=hst.integers(min_value=1), value2=hst.integers(min_value=1, max_value=50))
+    @given(value1=hst.integers(min_value=1), value2=hst.integers(max_value=50))
     def test_combo_integer_exponentiation(self, value1: int, value2: int) -> None:
         combo1 = onedigit.Combo(value1)
         combo2 = onedigit.Combo(value2)
@@ -184,7 +227,7 @@ class Test_Combo(unittest.TestCase):
 
         # The object method protects against gigantic values.
         # But we also need to protect the tester from crashing
-        # while evaluating that factorial.
+        # while evaluating that exponentiation.
         if (value1 < 0) or (value2 > 40):
             self.check_combo(combo3, 0)
             return
@@ -222,6 +265,4 @@ class Test_Combo(unittest.TestCase):
             self.check_combo(combo2, 0)
             return
 
-        # FIXME, we cannot validate this expression yet
-        # self.check_combo(combo2, expected1)
-        assert combo2.value == math.factorial(value1)
+        self.check_combo(combo2, math.factorial(value1))
