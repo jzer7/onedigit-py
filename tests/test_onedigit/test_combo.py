@@ -218,14 +218,14 @@ class Test_Combo(unittest.TestCase):
         else:
             self.check_combo(combo4, 0)
 
-    @given(value1=hst.integers(min_value=1), value2=hst.integers(max_value=50))
+    @given(value1=hst.integers(min_value=1), value2=hst.integers(min_value=0, max_value=50))
     def test_combo_integer_exponentiation(self, value1: int, value2: int) -> None:
         combo1 = onedigit.Combo(value1)
         combo2 = onedigit.Combo(value2)
 
+        # The object method protects against gigantic values.
         combo3 = combo1.binary_operation(combo2, "^")
 
-        # The object method protects against gigantic values.
         # But we also need to protect the tester from crashing
         # while evaluating that exponentiation.
         if (value1 < 0) or (value2 > 40):
@@ -233,6 +233,16 @@ class Test_Combo(unittest.TestCase):
             return
 
         self.check_combo(combo3, (value1**value2))
+
+    @given(value1=hst.integers(min_value=1), value2=hst.integers(max_value=-1))
+    def test_combo_integer_exponentiation_negative_exponent(self, value1: int, value2: int) -> None:
+        combo1 = onedigit.Combo(value1)
+        combo2 = onedigit.Combo(value2)
+
+        combo3 = combo1.binary_operation(combo2, "^")
+
+        # Negative exponents are not allowed, thus result should be zero
+        self.check_combo(combo3, 0)
 
     @given(value1=hst.integers())
     def test_combo_sqrt(self, value1: int) -> None:
@@ -256,9 +266,9 @@ class Test_Combo(unittest.TestCase):
     def test_combo_factorial(self, value1: int) -> None:
         combo1 = onedigit.Combo(value1)
 
+        # The object method protects against gigantic values.
         combo2 = combo1.unary_operation("!")
 
-        # The object method protects against gigantic values.
         # But we also need to protect the tester from crashing
         # while evaluating that factorial.
         if (value1 < 0) or (value1 > 20):
