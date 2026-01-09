@@ -7,6 +7,7 @@ from typing import Any, List
 
 from .combo import Combo
 from .logger import get_logger
+from .operations import binary_operation, unary_operation
 
 logger = get_logger(__name__)
 
@@ -218,7 +219,7 @@ class Model:
             #   !:    factorial
             #   sqrt: square root
             for op in ["!", "sqrt"]:
-                updates += new_combos.state_update(combo1.unary_operation(op=op))
+                updates += new_combos.state_update(unary_operation(combo1, op=op))
 
             for combo2 in known:
                 # We only run cases where combo1 >= combo2
@@ -228,12 +229,12 @@ class Model:
                 #           to run cases where combo1 < combo2
                 for op in ["+", "-", "*", "/"]:
                     if combo1.value >= combo2.value:
-                        updates += new_combos.state_update(combo1.binary_operation(combo2, op))
+                        updates += new_combos.state_update(binary_operation(combo1, combo2, op))
 
                 # We need to run both cases (combo1 > combo2, and combo2 > combo1)
                 #   ^
                 for op in ["^"]:
-                    updates += new_combos.state_update(combo1.binary_operation(combo2, op))
+                    updates += new_combos.state_update(binary_operation(combo1, combo2, op))
 
         self.state_merge(new_combos)
 

@@ -4,6 +4,7 @@ from hypothesis import given
 from hypothesis import strategies as hst
 
 import onedigit
+from onedigit.operations import binary_operation
 
 # class Model:
 #     digit: int
@@ -99,8 +100,8 @@ class Test_Model(unittest.TestCase):
         assert (3 * digit) not in model1.state
 
         # Define a few combinations
-        combo2 = combo1.binary_operation(combo1, "+")
-        combo3 = combo1.binary_operation(combo2, "+")
+        combo2 = binary_operation(combo1, combo1, "+")
+        combo3 = binary_operation(combo1, combo2, "+")
 
         # Add those new combinations into the model
         # And ensure they are added properly
@@ -120,7 +121,7 @@ class Test_Model(unittest.TestCase):
         combo1 = model1.state[digit]
 
         # add one extra combination (value = digit + digit)
-        model1.state_update(combo1.binary_operation(combo1, "+"))
+        model1.state_update(binary_operation(combo1, combo1, "+"))
 
         # Get a copy and delete the original objects
         model2 = model1.copy()
