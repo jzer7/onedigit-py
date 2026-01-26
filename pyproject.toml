@@ -27,17 +27,14 @@ dependencies    = [
 
 [dependency-groups]
 dev = [
-    "bandit[toml]>=1.9.2",
-    "hypothesis[cli]>=6.150.0",
+    "bandit[toml]>=1.9.3",
+    "hypothesis[cli]>=6.151.2",
     "mypy>=1.19.1",
     "pytest>=9.0.2",
-    "pytest-benchmark>=5.2.3",
     "pytest-cov>=7.0.0",
-    "pytest-subtests>=0.15.0",
-    "pytest-timeout>=2.4.0",
-    "ruff>=0.14.11",
-    "ty>=0.0.10",
-    "uv-bump>=0.4.0",
+    "ruff>=0.14.14",
+    "ty>=0.0.13",
+    "uv-bump>=0.4.1",
     "vulture>=2.14",
 ]
 
@@ -47,7 +44,7 @@ onedigit = "onedigit.cli:app"
 [tool.bandit]
 exclude_dirs = [
     ".git",
-    ".venv",
+    ".venv*",
 ]
 skips = [
     "B101",     # Using asserts is needed for tests
