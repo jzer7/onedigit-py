@@ -28,13 +28,13 @@ dependencies    = [
 [dependency-groups]
 dev = [
     "bandit[toml]>=1.9.3",
-    "hypothesis[cli]>=6.151.2",
+    "hypothesis[cli]>=6.151.9",
     "mypy>=1.19.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
-    "ruff>=0.14.14",
-    "ty>=0.0.13",
-    "uv-bump>=0.4.1",
+    "ruff>=0.15.2",
+    "ty>=0.0.18",
+    "uv-bump>=0.4.2",
     "vulture>=2.14",
 ]
 
