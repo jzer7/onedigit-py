@@ -4,15 +4,16 @@
         "charliermarsh.ruff",
         "davidanson.vscode-markdownlint",
         "editorconfig.editorconfig",
-        "hediet.vscode-drawio",
         "GitHub.copilot",
+        "hediet.vscode-drawio",
         "KevinRose.vsc-python-indent",
         "ms-python.mypy-type-checker",
         "ms-python.python",
+        "ms-vscode-remote.remote-containers",
         "redhat.vscode-yaml",
         "streetsidesoftware.code-spell-checker",
         "tamasfe.even-better-toml",
         "task.vscode-task",
-        "timonwong.shellcheck",
+        "timonwong.shellcheck"
     ]
 }

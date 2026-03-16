@@ -1,8 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
-  "dictionaries": [
-    "project"
-  ],
+  "version": "0.2",
   "dictionaryDefinitions": [
     {
       "addWords": true,
@@ -10,9 +8,13 @@
       "path": "project.dict"
     }
   ],
+  "dictionaries": [
+    "project"
+  ],
   "ignorePaths": [
       ".git",
       ".gitignore",
+      "vendors",
       "*.drawio",
       "*.svg"
   ],
@@ -26,6 +28,5 @@
   "import": [],
   "language": "en",
   "useGitignore": true,
-  "version": "0.2",
   "words": []
 }

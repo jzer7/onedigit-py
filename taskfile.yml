@@ -28,6 +28,8 @@ tasks:
 
   setup:
     cmds:
+      - uv venv --clear
+      - uv lock
       - uv sync -p {{.PYTHON_VERSION}} --all-groups
     desc: prepare a venv and install all Python dependencies using uv
 
