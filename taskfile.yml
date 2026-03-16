@@ -3,7 +3,7 @@
 version: "3"
 
 vars:
-  PYTHON_VERSION: '3.12'
+  PYTHON_VERSION: '3.14'
   ACT_JOB: 'test'
 
 tasks:

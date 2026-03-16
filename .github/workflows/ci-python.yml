@@ -21,7 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - "3.12"
           - "3.14"
         os:
           - ubuntu-latest
@@ -37,10 +36,10 @@ jobs:
       - name: Install Task
         uses: go-task/setup-task@v1
         with:
-          version: 3.45.x
+          version: 3.x
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           version: "latest"
           python-version: ${{ matrix.python-version }}

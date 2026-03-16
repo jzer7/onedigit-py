@@ -20,22 +20,22 @@ classifiers     = [
     "Environment :: Console",
     "Topic :: Games/Entertainment :: Puzzle Games",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies    = [
     "colorlog>=6.10.1",
 ]
 
 [dependency-groups]
 dev = [
-    "bandit[toml]>=1.9.3",
+    "bandit[toml]>=1.9.4",
     "hypothesis[cli]>=6.151.9",
     "mypy>=1.19.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
-    "ruff>=0.15.2",
-    "ty>=0.0.18",
+    "ruff>=0.15.6",
+    "ty>=0.0.23",
     "uv-bump>=0.4.2",
-    "vulture>=2.14",
+    "vulture>=2.15",
 ]
 
 [project.scripts]
