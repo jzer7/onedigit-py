@@ -20,22 +20,22 @@ classifiers     = [
     "Environment :: Console",
     "Topic :: Games/Entertainment :: Puzzle Games",
 ]
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 dependencies    = [
     "colorlog>=6.10.1",
 ]
 
 [dependency-groups]
 dev = [
-    "bandit[toml]>=1.9.4",
-    "hypothesis[cli]>=6.151.9",
-    "mypy>=1.19.1",
-    "pytest>=9.0.2",
-    "pytest-cov>=7.0.0",
-    "ruff>=0.15.6",
-    "ty>=0.0.23",
-    "uv-bump>=0.4.2",
-    "vulture>=2.15",
+    "bandit[toml]>=1.9.4",                                  # Security linter
+    "hypothesis[cli]>=6.152.1",                             # Property-based testing
+    "mypy>=1.20.1",                                         # Static type checker
+    "pytest-cov>=7.1.0",                                    # Coverage plugin for pytest
+    "pytest>=9.0.3",                                        # Testing framework
+    "ruff>=0.15.10",                                        # Linter and formatter
+    "ty>=0.0.31",                                           # Type checker and language server (by Astral)
+    "uv-bump>=0.5.0",
+    "vulture>=2.16",                                        # Dead code analysis
 ]
 
 [project.scripts]
