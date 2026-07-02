@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e
 
@@ -26,6 +26,7 @@ VOLUME="/python"
 PROJ_NAME="$(basename $PWD)"
 VENV_DIR="$VOLUME/venvs/$PROJ_NAME"
 VENV_LINK_NAME=".venv-container"
+VOL_CACHE_DIR="$VOLUME/cache/uv"
 
 # ----------------------------------------------------------
 # Utility functions
@@ -94,11 +95,11 @@ uv generate-shell-completion bash | sudo tee /usr/share/bash-completion/completi
 
 # 2. Prepare cache and venv directories in the volume
 sudo chown "$USERNAME" "$VOLUME"
-mkdir -p "$VOLUME/cache/uv"
+mkdir -p "$VOL_CACHE_DIR"
 mkdir -p "$VENV_DIR"
 
 # 3. Enable the cache
-force_sym_link "$VOLUME/cache/uv" "$HOME/.cache/uv" || die "Could not change uv cache"
+force_sym_link "$VOL_CACHE_DIR" "$HOME/.cache/uv" || die "Could not change uv cache"
 
 # 4. Enable the venv
 update_or_create_sym_link "$VENV_DIR" "$VENV_LINK_NAME" || die "Could not create sym link for \"$VENV_LINK_NAME\."
@@ -106,12 +107,13 @@ update_or_create_sym_link "$VENV_DIR" "$VENV_LINK_NAME" || die "Could not create
 export UV_PROJECT_ENVIRONMENT="$VENV_DIR"
 echo "export UV_PROJECT_ENVIRONMENT=$VENV_DIR" >> "$HOME/.profile"
 echo "export UV_PROJECT_ENVIRONMENT=$VENV_DIR" >> "$HOME/.bashrc"
+echo "export UV_CACHE_DIR=$VOL_CACHE_DIR" >> "$HOME/.profile"
+echo "export UV_CACHE_DIR=$VOL_CACHE_DIR" >> "$HOME/.bashrc"
 
 ## Build the environment, if it doesn't exist
 uv venv --allow-existing "$VENV_DIR"
 
-# 5. Install packages, without changing the lockfile
+# 5. Ensure project dependencies are installed and match the lockfile
 if [ -e uv.lock ]; then
-  uv sync --locked
   uv sync --locked --all-groups
 fi

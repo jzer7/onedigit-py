@@ -1,6 +1,17 @@
 ---
 version: 2
 updates:
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "devcontainer"
   - package-ecosystem: "github-actions"
     directory: "/.github/workflows"
     target-branch: "main"
