@@ -1,0 +1,19 @@
+{
+  "features": {
+    "ghcr.io/devcontainers-extra/features/apt-get-packages:1": {
+      "version": "1.0.8",
+      "resolved": "ghcr.io/devcontainers-extra/features/apt-get-packages@sha256:776fa11c30c50fa91d5e1bf050444b0f130827457109c349db92e8e126b750ec",
+      "integrity": "sha256:776fa11c30c50fa91d5e1bf050444b0f130827457109c349db92e8e126b750ec"
+    },
+    "ghcr.io/devcontainers-extra/features/go-task:1": {
+      "version": "1.0.6",
+      "resolved": "ghcr.io/devcontainers-extra/features/go-task@sha256:4d1db153919976cadd3209ca05d655a761a01707767716994dad677b4538dc1b",
+      "integrity": "sha256:4d1db153919976cadd3209ca05d655a761a01707767716994dad677b4538dc1b"
+    },
+    "ghcr.io/devcontainers-extra/features/uv:1.0.2": {
+      "version": "1.0.2",
+      "resolved": "ghcr.io/devcontainers-extra/features/uv@sha256:1ac5b9f17a9e9e745933d0ac2ecf758e06ed3da4423cd22c94cce4d482fd2dd8",
+      "integrity": "sha256:1ac5b9f17a9e9e745933d0ac2ecf758e06ed3da4423cd22c94cce4d482fd2dd8"
+    }
+  }
+}
