@@ -113,3 +113,6 @@ extend-select = [
 [tool.setuptools]
 
 [tool.setuptools.dynamic]
+
+[tool.uv]
+exclude-newer = "7 days"
