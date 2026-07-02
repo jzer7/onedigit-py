@@ -1,12 +1,25 @@
+---
 version: 2
 updates:
-  - package-ecosystem: github-actions
-    directory: "/"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    target-branch: "main"
     schedule:
-      interval: weekly
-    target-branch: main
-  - package-ecosystem: uv
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+  - package-ecosystem: "uv"
     directory: "/"
+    target-branch: "main"
     schedule:
-      interval: weekly
-    target-branch: main
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"

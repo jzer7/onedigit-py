@@ -23,6 +23,7 @@ max_line_length = unset
 
 [**/.{devcontainer,vscode}/*.json]
 indent_size = 4
+max_line_length = unset
 
 [LICENSE]
 insert_final_newline = false
