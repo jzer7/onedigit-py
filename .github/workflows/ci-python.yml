@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # https://github.com/actions/checkout/releases/tag/v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # https://github.com/actions/checkout/releases/tag/v7.0.1
 
       - name: Install Task
         uses: go-task/setup-task@01a4adf9db2d14c1de7a560f09170b6e0df736aa # https://github.com/go-task/setup-task/releases/tag/v2.1.0
@@ -40,7 +40,7 @@ jobs:
           version: 3.x
 
       - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # https://github.com/astral-sh/setup-uv/releases/tag/v8.2.0
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # https://github.com/astral-sh/setup-uv/releases/tag/v9.0.0
         with:
           version: "latest"
           python-version: ${{ matrix.python-version }}

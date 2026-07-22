@@ -15,14 +15,14 @@
             // "release": "https://github.com/devcontainers-extra/features/pkgs/container/features%2Fgo-task"
             // "1.0.6": "sha256:4d1db153919976cadd3209ca05d655a761a01707767716994dad677b4538dc1b"
             // "task": "https://github.com/go-task/task/releases"
-            "version": "3.50.0"
+            "version": "3.53.0"
         },
         "ghcr.io/devcontainers-extra/features/uv:1.0.2": {
             // "source": "https://github.com/devcontainers-extra/features/tree/main/src/uv",
             // "release": "https://github.com/devcontainers-extra/features/pkgs/container/features%2Fuv"
             // "1.0.2": "sha256:1ac5b9f17a9e9e745933d0ac2ecf758e06ed3da4423cd22c94cce4d482fd2dd8"
             // "uv": "https://github.com/astral-sh/uv/releases"
-            "version": "0.11.26"
+            "version": "0.11.31"
         }
     },
     "forwardPorts": [],
